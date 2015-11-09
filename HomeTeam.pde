@@ -1,3 +1,0 @@
-class HomeTeam extends Team{
-  
-}
