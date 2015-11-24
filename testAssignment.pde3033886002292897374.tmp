@@ -1,5 +1,5 @@
 final int SEASONS = 10;  //This is a constant variable - there are 10 seasons
-int index = 0;
+
 //create ArrayLists to store obects in
 ArrayList<ArrayList<Team>> premierLeague = new ArrayList<ArrayList<Team>>();
 ArrayList<ArrayList<HomeTeam>> premHome = new ArrayList<ArrayList<HomeTeam>>();
@@ -21,8 +21,8 @@ int menu;
  */
 void setup() {  
   //Setup the sketch
-  size(500, 500);
-  background(252, 252, 252);
+  size(600, 600);
+  background(0);
   
   //call the loadData() method and pass the filenames and ArrayList objects
   loadData("premier_league.csv", premierLeague, premHome, premAway);
@@ -30,27 +30,55 @@ void setup() {
   loadData("liga.csv", liga, ligaHome, ligaAway);
   loadData("seriea.csv", seriea, serieHome, serieAway);
   
-  
-  
-  
-  
   //Set the menu option to 0 for main menu
   menu = 0;
 
-  
-  //test methods here
-  showTable(premierLeague);
-  
-  //println(premierLeague.get(0).size());
+  //Print out the data as a test to show it working - show each season separated by two blank lines - won't be in the final version.
+  for (int i = 0; i < SEASONS; i++) {
+    println("Home and away Teams");
+    for (int j = 0; j < premierLeague.get(i).size(); j++) {
+      println(premierLeague.get(i).get(j).name + " - " + premierLeague.get(i).get(j).points + " pts - " + premierLeague.get(i).get(j).goalsFor + " goals - " + premierLeague.get(i).get(j).wins + " wins - " + premierLeague.get(i).get(j).loses + " loses - " + premierLeague.get(i).get(j).draws + " draws");
+     }//end inner for(j)
+    println();
+    println();
+    println("Home Teams Only");
+    for (int j = 0; j < premHome.get(i).size(); j++) {
+      println(premHome.get(i).get(j).name + " - " + premHome.get(i).get(j).points + " pts - " + premHome.get(i).get(j).goalsFor + " goals - " + premHome.get(i).get(j).wins + " wins - " + premHome.get(i).get(j).loses + " loses - " + premHome.get(i).get(j).draws + " draws");
+    }//end inner for(j)
+    println();
+    println();
+    println("Away Teams Only");
+    for (int j = 0; j < premHome.get(i).size(); j++) {
+      println(premAway.get(i).get(j).name + " - " + premAway.get(i).get(j).points + " pts - " + premAway.get(i).get(j).goalsFor + " goals - " + premAway.get(i).get(j).wins + " wins - " + premAway.get(i).get(j).loses + " loses - " + premAway.get(i).get(j).draws + " draws");
+    }//end inner for(j)
+    //for (int j = 0; j < bundesliga.get(i).size(); j++) {
+    // println(bundesliga.get(i).get(j).name + " - " + bundesliga.get(i).get(j).points + " pts - " + bundesliga.get(i).get(j).goalsFor + " goals - " + bundesliga.get(i).get(j).wins + " wins - " + bundesliga.get(i).get(j).loses + " loses - " + bundesliga.get(i).get(j).draws + " draws");
+    //}//end inner for(j)
+    //println();
+    //println();
+
+    //for (int j = 0; j < liga.get(i).size(); j++) {
+    // println(liga.get(i).get(j).name + " - " + liga.get(i).get(j).points + " pts - " + liga.get(i).get(j).goalsFor + " goals - " + liga.get(i).get(j).wins + " wins - " + liga.get(i).get(j).loses + " loses - " + liga.get(i).get(j).draws + " draws");
+    //}//end inner for(j)
+    //println();
+    //println();
+
+
+    //for (int j = 0; j < seriea.get(i).size(); j++) {
+    // println(seriea.get(i).get(j).name + " - " + seriea.get(i).get(j).points + " pts - " + seriea.get(i).get(j).goalsFor + " goals - " + seriea.get(i).get(j).wins + " wins - " + seriea.get(i).get(j).loses + " loses - " + seriea.get(i).get(j).draws + " draws");
+    //}//end inner for(j)
+    println();
+    println();
+  }//end inner for(i)
 }//end setup() method
 
 void draw() {
-  /*//Switch case to select the menu options
+  //Switch case to select the menu options
   switch (menu){
    case 0:
      mainMenu();
      break;
-  }*/
+  }
 }
 
 /*Method name: loadData
@@ -115,7 +143,7 @@ void loadData(String filename, ArrayList<ArrayList<Team>> teams, ArrayList<Array
       }//end if/else
       
       
-      //re-use int variables that will find the index number of each team in the current line - -1 is default and means the team doesn't exist yet
+      //create two int variables that will find the index number of each team in the current line - -1 is default and means the team doesn't exist yet
       homeIndex = -1;
       awayIndex = -1;
       //search for the home teams index in the ArrayList, if it exists
@@ -155,38 +183,5 @@ void loadData(String filename, ArrayList<ArrayList<Team>> teams, ArrayList<Array
 }//end loadData() method
 
 void mainMenu(){
-  background(252, 252, 252);
-  //Declare/initialise variables
-  float buttonEdge = width * 0.2f;
-  float buttonY = height * 0.2f;
-  float bannerEdge = width * 0.1f;;
-  float bannerY = height * 0.1f;
- 
- fill(198, 214, 234);
- stroke(198, 214, 234);
-  rect(bannerEdge, bannerY, width - (bannerEdge * 2), bannerY);
-}
-
-void showTable(ArrayList<ArrayList<Team>> teams){
-  //Declare/initialise variables
- float tableSide = width * 0.1f;
- float tableTop = height * 0.1f;
- float tableW = width - (tableSide * 2);
- float tableH = width - (tableTop * 2);
- float col1X = tableSide + (tableW * 0.2f);
- float col2X = col1X + (tableW * 0.4f);
- float col3X = col2X + (tableW * 0.2f);
- float rowHeight = tableH / (float)teams.get(0).size();
- 
- //Draw the table background
- rect(tableSide, tableTop, tableW, tableH);
- 
- fill(0);
- for(int i = 0; i < teams.get(0).size(); i++){
-   text(teams.get(0).get(i).name, col1X, tableTop + rowHeight + (rowHeight * i));
- }
- 
- line(col1X, tableTop, col1X, tableH + tableTop);
- line(col2X, tableTop, col2X, tableH + tableTop);
- line(col3X, tableTop, col3X, tableH + tableTop);
+  background(0);
 }
