@@ -8,6 +8,7 @@ class Team {
   int wins;
   int loses;
   int draws;
+  int played;
 
   //Constructor method
   Team(String name, int goalsFor, int goalsAgainst) {
@@ -15,6 +16,7 @@ class Team {
     this.goalsFor = goalsFor;
     this.goalsAgainst = goalsAgainst;
     goalDifference = goalsFor - goalsAgainst;
+    played = 1;
 
     //if the team won
     if (goalsFor > goalsAgainst) {
@@ -43,6 +45,7 @@ class Team {
     goalDifference += (goalsFor - goalsAgainst);
     this.goalsFor += goalsFor;
     this.goalsAgainst += goalsAgainst;
+    played++;
 
     if (goalsFor > goalsAgainst) {//If the team won
       points += 3; 

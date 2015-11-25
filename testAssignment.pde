@@ -16,6 +16,7 @@ ArrayList<ArrayList<AwayTeam>> serieAway = new ArrayList<ArrayList<AwayTeam>>();
 
 //Global variable to store current menu option
 int menu;
+int year;
 
 /*Setup method will prepare all the relevant data before anythiing has to be implemented
  */
@@ -23,34 +24,38 @@ void setup() {
   //Setup the sketch
   size(500, 500);
   background(252, 252, 252);
-  
+
   //call the loadData() method and pass the filenames and ArrayList objects
   loadData("premier_league.csv", premierLeague, premHome, premAway);
   loadData("bundesliga.csv", bundesliga, bundesHome, bundesAway);
   loadData("liga.csv", liga, ligaHome, ligaAway);
   loadData("seriea.csv", seriea, serieHome, serieAway);
-  
-  
-  
-  
-  
-  //Set the menu option to 0 for main menu
-  menu = 0;
 
-  
-  //test methods here
-  showTable(premierLeague);
-  
+
+
+
+
+  //Set the menu option to 0 for main menu
+  menu = 1;
+  year = 1;
+
+
+
+
   //println(premierLeague.get(0).size());
 }//end setup() method
 
 void draw() {
-  /*//Switch case to select the menu options
-  switch (menu){
-   case 0:
-     mainMenu();
-     break;
-  }*/
+  background(255);
+  //Switch case to select the menu options
+  switch (menu) {
+  case 0:
+    mainMenu();
+    break;
+  case 1:
+    showTable(premierLeague, year);
+    break;
+  }
 }
 
 /*Method name: loadData
@@ -113,8 +118,8 @@ void loadData(String filename, ArrayList<ArrayList<Team>> teams, ArrayList<Array
       } else {//else team does exist - edit the objects fields
         teams.get(i).get(awayIndex).editTeam(awayScore, homeScore);
       }//end if/else
-      
-      
+
+
       //re-use int variables that will find the index number of each team in the current line - -1 is default and means the team doesn't exist yet
       homeIndex = -1;
       awayIndex = -1;
@@ -132,61 +137,141 @@ void loadData(String filename, ArrayList<ArrayList<Team>> teams, ArrayList<Array
         homeTeams.get(i).get(homeIndex).editTeam(homeScore, awayScore);
       }//end if/else
 
-      
-      
-      
+
+
+
       //search for the away teams index in the AwayTeam ArrayList, if it exists
       for (int k = 0; k < awayTeams.get(i).size(); k++) {
         if (awayTeam.equals(awayTeams.get(i).get(k).name)) {
           awayIndex = k;
         }//end if()
       }//end inner inner for(k)
-      
+
       //if awayIndex is -1 team doesn't exist yet - add a new object to the ArrayList and instanciate its fields
       if (awayIndex < 0) {
         awayTeams.get(i).add(new AwayTeam(awayTeam, awayScore, homeScore));
       } else {//else team does exist - edit the objects fields
         awayTeams.get(i).get(awayIndex).editTeam(awayScore, homeScore);
       }//end if/else
-   
-      
     }//end inner for(j)
   }//end outer for(i)
 }//end loadData() method
 
-void mainMenu(){
+void mainMenu() {
   background(252, 252, 252);
   //Declare/initialise variables
   float buttonEdge = width * 0.2f;
   float buttonY = height * 0.2f;
-  float bannerEdge = width * 0.1f;;
+  float bannerEdge = width * 0.1f;
+  ;
   float bannerY = height * 0.1f;
- 
- fill(198, 214, 234);
- stroke(198, 214, 234);
+
+  fill(198, 214, 234);
+  stroke(198, 214, 234);
   rect(bannerEdge, bannerY, width - (bannerEdge * 2), bannerY);
 }
 
-void showTable(ArrayList<ArrayList<Team>> teams){
+void showTable(ArrayList<ArrayList<Team>> teams, int year) {
   //Declare/initialise variables
- float tableSide = width * 0.1f;
- float tableTop = height * 0.1f;
- float tableW = width - (tableSide * 2);
- float tableH = width - (tableTop * 2);
- float col1X = tableSide + (tableW * 0.2f);
- float col2X = col1X + (tableW * 0.4f);
- float col3X = col2X + (tableW * 0.2f);
- float rowHeight = tableH / (float)teams.get(0).size();
- 
- //Draw the table background
- rect(tableSide, tableTop, tableW, tableH);
- 
- fill(0);
- for(int i = 0; i < teams.get(0).size(); i++){
-   text(teams.get(0).get(i).name, col1X, tableTop + rowHeight + (rowHeight * i));
- }
- 
- line(col1X, tableTop, col1X, tableH + tableTop);
- line(col2X, tableTop, col2X, tableH + tableTop);
- line(col3X, tableTop, col3X, tableH + tableTop);
+  float tableSide = width * 0.1f;
+  float tableTop = height * 0.1f;
+  float tableW = width - (tableSide * 2);
+  float tableH = width - (tableTop * 2);
+  float colScaleA = 0.0714285f;
+  float colScaleB = 0.3571428f;
+  float col1X = tableSide + (tableW * colScaleA);
+  float col2X = col1X + (tableW * colScaleB);
+  float col3X = col2X + (tableW * colScaleA);
+  float col4X = col3X + (tableW * colScaleA);
+  float col5X = col4X + (tableW * colScaleA);
+  float col6X = col5X + (tableW * colScaleA);
+  float col7X = col6X + (tableW * colScaleA);
+  float col8X = col7X + (tableW * colScaleA);
+  float col9X = col8X + (tableW * colScaleA);
+  float rowHeight = tableH / (float)teams.get(0).size();
+  float padding = rowHeight * 0.2f;
+
+  //Draw the table background
+  fill(0);
+  stroke(255);
+  text("Pos", tableSide + padding, tableTop - padding);
+  text("Name", col1X + padding, tableTop - padding);
+  text("Pld", col2X + padding, tableTop - padding);
+  text("W", col3X + padding, tableTop - padding);
+  text("D", col4X + padding, tableTop - padding);
+  text("L", col5X + padding, tableTop - padding);
+  text("G+", col6X + padding, tableTop - padding);
+  text("G-", col7X + padding, tableTop - padding);
+  text("GD", col8X + padding, tableTop - padding);
+  text("Pts", col9X + padding, tableTop - padding);
+  for (int i = 0; i < teams.get(year).size(); i++) {
+    float textY = tableTop + rowHeight + (rowHeight * i) - padding;
+    float posX = tableSide + padding;
+    float nameX = col1X + padding;
+    float pldX = col2X + padding;
+    float wX = col3X + padding;
+    float dX = col4X + padding;
+    float lX = col5X + padding;
+    float gPX = col6X + padding;
+    float gMX = col7X + padding;
+    float gDX = col8X + padding;
+    float ptsX = col9X + padding;
+    //float rowBottom = tableTop + rowHeight + (rowHeight * i);
+
+    //Draw row bottom border
+    int[] colour = getColour(i);
+    fill(colour[0], colour[1], colour[2]);
+    rect(tableSide, tableTop + (rowHeight * i), tableW, rowHeight);
+    fill(255);
+    text(i + 1, posX, textY);
+    text(teams.get(0).get(i).name, nameX, textY);
+    text(teams.get(0).get(i).played, pldX, textY);
+    text(teams.get(0).get(i).wins, wX, textY);
+    text(teams.get(0).get(i).draws, dX, textY);
+    text(teams.get(0).get(i).loses, lX, textY);
+    text(teams.get(0).get(i).goalsFor, gPX, textY);
+    text(teams.get(0).get(i).goalsAgainst, gMX, textY);
+    text(teams.get(0).get(i).goalDifference, gDX, textY);
+    text(teams.get(0).get(i).points, ptsX, textY);
+  }
+
+  line(col1X, tableTop, col1X, tableH + tableTop);
+  line(col2X, tableTop, col2X, tableH + tableTop);
+  line(col3X, tableTop, col3X, tableH + tableTop);
+  line(col4X, tableTop, col4X, tableH + tableTop);
+  line(col5X, tableTop, col5X, tableH + tableTop);
+  line(col6X, tableTop, col6X, tableH + tableTop);
+  line(col7X, tableTop, col7X, tableH + tableTop);
+  line(col8X, tableTop, col8X, tableH + tableTop);
+  line(col9X, tableTop, col9X, tableH + tableTop);
+}
+
+int[] getColour(int index) {
+  int[] colour = new int[3];
+  if (index == 0) {
+    colour[0] = 81;
+    colour[1] = 81;
+    colour[2] = 109;
+    return colour;
+  } else if (index > 0 && index < 4) {
+    colour[0] = 96;
+    colour[1] = 96;
+    colour[2] = 124;
+    return colour;
+  } else if (index == 4) {
+    colour[0] = 112;
+    colour[1] = 111;
+    colour[2] = 142;
+    return colour;
+  } else if (index > 17) {
+    colour[0] = 81;
+    colour[1] = 81;
+    colour[2] = 109;
+    return colour;
+  } else {
+    colour[0] = 5;
+    colour[1] = 5;
+    colour[2] = 40;
+    return colour;
+  }
 }
