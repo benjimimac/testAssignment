@@ -4,7 +4,7 @@ class Team {
   int goalsFor;
   int goalsAgainst;
   int goalDifference;
-  int points;
+  private int points;
   int wins;
   int loses;
   int draws;
@@ -62,4 +62,8 @@ class Team {
   String getName() {
     return name;
   }//end getName method
+  
+  int getPoints(){
+   return points; 
+  }
 }//end class Team

@@ -13,10 +13,15 @@ ArrayList<ArrayList<AwayTeam>> ligaAway = new ArrayList<ArrayList<AwayTeam>>();
 ArrayList<ArrayList<Team>> seriea = new ArrayList<ArrayList<Team>>();
 ArrayList<ArrayList<HomeTeam>> serieHome = new ArrayList<ArrayList<HomeTeam>>();
 ArrayList<ArrayList<AwayTeam>> serieAway = new ArrayList<ArrayList<AwayTeam>>();
+LeagueTable table;
 
 //Global variable to store current menu option
 int menu;
 int year;
+color arrowOnColour;
+color arrowOffColour;
+color colour1;
+color colour2;
 
 /*Setup method will prepare all the relevant data before anythiing has to be implemented
  */
@@ -31,7 +36,8 @@ void setup() {
   loadData("liga.csv", liga, ligaHome, ligaAway);
   loadData("seriea.csv", seriea, serieHome, serieAway);
 
-
+  //sort the ArrayLists
+  sortList(premierLeague);
 
 
 
@@ -40,9 +46,13 @@ void setup() {
   year = 1;
 
 
+  arrowOnColour = color(222, 194, 116);
+  arrowOffColour = color(127, 127, 127);
+  colour1 = arrowOnColour;
+  colour2 = arrowOnColour;
+  table = new LeagueTable((float)premierLeague.get(0).size());
 
-
-  //println(premierLeague.get(0).size());
+    //println(premierLeague.get(0).size());
 }//end setup() method
 
 void draw() {
@@ -53,7 +63,7 @@ void draw() {
     mainMenu();
     break;
   case 1:
-    showTable(premierLeague, year);
+    showLeagueTable(premierLeague, table, year);
     break;
   }
 }
@@ -157,6 +167,22 @@ void loadData(String filename, ArrayList<ArrayList<Team>> teams, ArrayList<Array
   }//end outer for(i)
 }//end loadData() method
 
+void sortList(ArrayList<ArrayList<Team>> teams) {
+  Team tempTeam;
+
+  for (int i = 0; i < teams.size(); i++) {
+    for (int j = 0; j < teams.get(i).size() - 1; j++) {
+      for (int k = 0; k < teams.get(i).size() - j - 1; k++) {
+        if (teams.get(i).get(k).getPoints() < teams.get(i).get(k + 1).getPoints()) {
+          tempTeam = teams.get(i).get(k);
+          teams.get(i).set(k, teams.get(i).get(k + 1));
+          teams.get(i).set(k + 1, tempTeam);
+        }
+      }
+    }
+  }
+}
+
 void mainMenu() {
   background(252, 252, 252);
   //Declare/initialise variables
@@ -171,92 +197,24 @@ void mainMenu() {
   rect(bannerEdge, bannerY, width - (bannerEdge * 2), bannerY);
 }
 
-void showTable(ArrayList<ArrayList<Team>> teams, int year) {
-  //Declare/initialise variables
-  float tableSide = width * 0.1f;
-  float tableTop = height * 0.1f;
-  float tableW = width - (tableSide * 2);
-  float tableH = width - (tableTop * 2);
-  float colScaleA = 0.0714285f;
-  float colScaleB = 0.3571428f;
-  float col1X = tableSide + (tableW * colScaleA);
-  float col2X = col1X + (tableW * colScaleB);
-  float col3X = col2X + (tableW * colScaleA);
-  float col4X = col3X + (tableW * colScaleA);
-  float col5X = col4X + (tableW * colScaleA);
-  float col6X = col5X + (tableW * colScaleA);
-  float col7X = col6X + (tableW * colScaleA);
-  float col8X = col7X + (tableW * colScaleA);
-  float col9X = col8X + (tableW * colScaleA);
-  float rowHeight = tableH / (float)teams.get(0).size();
-  float padding = rowHeight * 0.2f;
-
-  //Draw the table background
-  fill(0);
-  stroke(255);
-  text("Pos", tableSide + padding, tableTop - padding);
-  text("Name", col1X + padding, tableTop - padding);
-  text("Pld", col2X + padding, tableTop - padding);
-  text("W", col3X + padding, tableTop - padding);
-  text("D", col4X + padding, tableTop - padding);
-  text("L", col5X + padding, tableTop - padding);
-  text("G+", col6X + padding, tableTop - padding);
-  text("G-", col7X + padding, tableTop - padding);
-  text("GD", col8X + padding, tableTop - padding);
-  text("Pts", col9X + padding, tableTop - padding);
-  for (int i = 0; i < teams.get(year).size(); i++) {
-    float textY = tableTop + rowHeight + (rowHeight * i) - padding;
-    float posX = tableSide + padding;
-    float nameX = col1X + padding;
-    float pldX = col2X + padding;
-    float wX = col3X + padding;
-    float dX = col4X + padding;
-    float lX = col5X + padding;
-    float gPX = col6X + padding;
-    float gMX = col7X + padding;
-    float gDX = col8X + padding;
-    float ptsX = col9X + padding;
-    //float rowBottom = tableTop + rowHeight + (rowHeight * i);
-
-    //Draw row bottom border
-    int[] colour = getColour(i);
-    fill(colour[0], colour[1], colour[2]);
-    rect(tableSide, tableTop + (rowHeight * i), tableW, rowHeight);
-    fill(255);
-    text(i + 1, posX, textY);
-    text(teams.get(0).get(i).getName(), nameX, textY);
-    text(teams.get(0).get(i).played, pldX, textY);
-    text(teams.get(0).get(i).wins, wX, textY);
-    text(teams.get(0).get(i).draws, dX, textY);
-    text(teams.get(0).get(i).loses, lX, textY);
-    text(teams.get(0).get(i).goalsFor, gPX, textY);
-    text(teams.get(0).get(i).goalsAgainst, gMX, textY);
-    text(teams.get(0).get(i).goalDifference, gDX, textY);
-    text(teams.get(0).get(i).points, ptsX, textY);
-  }
-
-  line(col1X, tableTop, col1X, tableH + tableTop);
-  line(col2X, tableTop, col2X, tableH + tableTop);
-  line(col3X, tableTop, col3X, tableH + tableTop);
-  line(col4X, tableTop, col4X, tableH + tableTop);
-  line(col5X, tableTop, col5X, tableH + tableTop);
-  line(col6X, tableTop, col6X, tableH + tableTop);
-  line(col7X, tableTop, col7X, tableH + tableTop);
-  line(col8X, tableTop, col8X, tableH + tableTop);
-  line(col9X, tableTop, col9X, tableH + tableTop);
-  
-  drawArrow(tableSide - padding, 230, tableSide - padding, 270, padding, 250, false);
-  drawArrow(tableSide + tableW + padding, 230, tableSide + tableW + padding, 270, width - padding, 250, false);
-}
+/*
+void showTable() {
+ 
+ 
+ 
+ leagueTable.getTableMargin() - leagueTable.getPadding(), 230, leagueTable.getMargin - leagueTable.getPadding, 270, width - leagueTable.getPadding(), 250 
+ drawArrow(tableSide - padding, 230, tableSide - padding, 270, padding, 250, false);
+ drawArrow(tableSide + tableW + padding, 230, tableSide + tableW + padding, 270, width - padding, 250, false);
+ }
+ */
 
 void drawArrow(float x1, float y1, float x2, float y2, float x3, float y3, boolean onButton) {
   if (onButton) {
     fill(191, 185, 165);
     stroke(191, 185, 165);
-  }
-  else{
-   fill(222, 194, 116);
-   stroke(222, 194, 116);
+  } else {
+    fill(222, 194, 116);
+    stroke(222, 194, 116);
   }
   triangle(x1, y1, x2, y2, x3, y3);
 }
@@ -278,7 +236,7 @@ int[] getColour(int index) {
     colour[1] = 111;
     colour[2] = 142;
     return colour;
-  } else if (index > 17) {
+  } else if (index > 16) {
     colour[0] = 81;
     colour[1] = 81;
     colour[2] = 109;
@@ -288,5 +246,30 @@ int[] getColour(int index) {
     colour[1] = 5;
     colour[2] = 40;
     return colour;
+  }
+}
+
+void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table, int year) {
+
+
+  Arrow arrow1 = new Arrow(45.0f, (float)230, 45.0f, (float)270, 5.0f, (float)250, colour1);
+  Arrow arrow2 = new Arrow(width - 45.0f, 230.0f, width - 45.0f, (float)270, width - 5.0f, (float)250, colour2);
+  //drawArrow(tableSide + tableW + padding, 230, tableSide + tableW + padding, 270, width - padding, 250, false);
+  table.renderTable(team, 1);
+
+  arrow1.renderArrow();
+  arrow2.renderArrow();
+  color testColor = get(mouseX, mouseY);
+  if (testColor == colour1 && mousePressed && (mouseButton == LEFT) && mouseX < table.getTableMargin()) {
+    colour1 = arrowOffColour;
+    if (year > 0) {
+      table.moveLeft();
+    }
+  }
+  if (testColor == colour2 && mousePressed && (mouseButton == LEFT) && mouseX > table.getTableMargin() + table.getPadding()) {
+    colour2 = arrowOffColour;
+    if (year < team.get(year).size()) {
+      //table.moveRight();
+    }
   }
 }
