@@ -1,6 +1,6 @@
 class Team {
   //class fields
-  String name;
+  private String name;
   int goalsFor;
   int goalsAgainst;
   int goalDifference;
@@ -38,9 +38,9 @@ class Team {
   }//end Team() constructor method
 
   /*Method name: editTeam
-  Purpose: Adds to the fields of the class
-  Arguments: Two integer variables - goalsFor and goalsAgainst
-  */
+   Purpose: Adds to the fields of the class
+   Arguments: Two integer variables - goalsFor and goalsAgainst
+   */
   void editTeam(int goalsFor, int goalsAgainst) {
     goalDifference += (goalsFor - goalsAgainst);
     this.goalsFor += goalsFor;
@@ -57,4 +57,9 @@ class Team {
       draws += 1;
     }
   }//end editTeam() method
+
+  //getters and setters go here
+  String getName() {
+    return name;
+  }//end getName method
 }//end class Team

@@ -125,7 +125,7 @@ void loadData(String filename, ArrayList<ArrayList<Team>> teams, ArrayList<Array
       awayIndex = -1;
       //search for the home teams index in the ArrayList, if it exists
       for (int k = 0; k < homeTeams.get(i).size(); k++) {
-        if (homeTeam.equals(homeTeams.get(i).get(k).name)) {
+        if (homeTeam.equals(homeTeams.get(i).get(k).getName())) {
           homeIndex = k;
         }//end if()
       }//end inner inner for(k)
@@ -142,7 +142,7 @@ void loadData(String filename, ArrayList<ArrayList<Team>> teams, ArrayList<Array
 
       //search for the away teams index in the AwayTeam ArrayList, if it exists
       for (int k = 0; k < awayTeams.get(i).size(); k++) {
-        if (awayTeam.equals(awayTeams.get(i).get(k).name)) {
+        if (awayTeam.equals(awayTeams.get(i).get(k).getName())) {
           awayIndex = k;
         }//end if()
       }//end inner inner for(k)
@@ -224,7 +224,7 @@ void showTable(ArrayList<ArrayList<Team>> teams, int year) {
     rect(tableSide, tableTop + (rowHeight * i), tableW, rowHeight);
     fill(255);
     text(i + 1, posX, textY);
-    text(teams.get(0).get(i).name, nameX, textY);
+    text(teams.get(0).get(i).getName(), nameX, textY);
     text(teams.get(0).get(i).played, pldX, textY);
     text(teams.get(0).get(i).wins, wX, textY);
     text(teams.get(0).get(i).draws, dX, textY);
@@ -244,6 +244,21 @@ void showTable(ArrayList<ArrayList<Team>> teams, int year) {
   line(col7X, tableTop, col7X, tableH + tableTop);
   line(col8X, tableTop, col8X, tableH + tableTop);
   line(col9X, tableTop, col9X, tableH + tableTop);
+  
+  drawArrow(tableSide - padding, 230, tableSide - padding, 270, padding, 250, false);
+  drawArrow(tableSide + tableW + padding, 230, tableSide + tableW + padding, 270, width - padding, 250, false);
+}
+
+void drawArrow(float x1, float y1, float x2, float y2, float x3, float y3, boolean onButton) {
+  if (onButton) {
+    fill(191, 185, 165);
+    stroke(191, 185, 165);
+  }
+  else{
+   fill(222, 194, 116);
+   stroke(222, 194, 116);
+  }
+  triangle(x1, y1, x2, y2, x3, y3);
 }
 
 int[] getColour(int index) {
