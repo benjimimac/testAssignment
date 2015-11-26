@@ -21,6 +21,7 @@ ArrayList<ArrayList<Team>> seriea = new ArrayList<ArrayList<Team>>();
 ArrayList<ArrayList<HomeTeam>> serieHome = new ArrayList<ArrayList<HomeTeam>>();
 ArrayList<ArrayList<AwayTeam>> serieAway = new ArrayList<ArrayList<AwayTeam>>();
 LeagueTable table;
+Menu mainMenu;
 
 //Global variable to store current menu option
 int menu;
@@ -37,8 +38,9 @@ boolean moveLeft;
  */
 void setup() {  
   //Setup the sketch
-  size(500, 500);
+  size(600, 600);
   background(252, 252, 252);
+  
 
   //call the loadData() method and pass the filenames and ArrayList objects
   loadData("premier_league.csv", premierLeague, premHome, premAway);
@@ -48,11 +50,14 @@ void setup() {
 
   //sort the ArrayLists
   sortList(premierLeague);
+  sortList(bundesliga);
+  sortList(liga);
+  sortList(seriea);
 
-
+  mainMenu = new Menu(4, "Premier League", "Bundesliga", "La Liga", "Serie A");
 
   //Set the menu option to 0 for main menu
-  menu = 1;
+  menu = 0;
   year = 0;
 
 
@@ -73,7 +78,8 @@ void draw() {
   //Switch case to select the menu options
   switch (menu) {
   case 0:
-    mainMenu();
+
+    mainMenu.renderMenu(4);
     break;
   case 1:
     //minim = new Minim(this);
@@ -81,7 +87,7 @@ void draw() {
     //theme.rewind();
     //theme.play();
 
-
+    background(192, 231, 249);
     showLeagueTable(premierLeague, table);
     break;
   }
@@ -203,17 +209,6 @@ void sortList(ArrayList<ArrayList<Team>> teams) {
 }
 
 void mainMenu() {
-  background(252, 252, 252);
-  //Declare/initialise variables
-  float buttonEdge = width * 0.2f;
-  float buttonY = height * 0.2f;
-  float bannerEdge = width * 0.1f;
-  ;
-  float bannerY = height * 0.1f;
-
-  fill(198, 214, 234);
-  stroke(198, 214, 234);
-  rect(bannerEdge, bannerY, width - (bannerEdge * 2), bannerY);
 }
 
 /*
@@ -295,7 +290,7 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
       colour1 = arrowOnColour;
 
       minim = new Minim(this);
-      theme = minim.loadSnippet("last.mp3");
+      theme = minim.loadSnippet("whistle.mp3");
       theme.rewind();
       theme.play();
     }
@@ -315,12 +310,12 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
       colour2 = arrowOnColour;
 
       minim = new Minim(this);
-      theme = minim.loadSnippet("last.mp3");
+      theme = minim.loadSnippet("whistle.mp3");
       theme.rewind();
-      theme.play();      
+      theme.play();
     }
   }
-  
+
   if (moveLeft) {
     if (tempIndex < 0) {
       table.moveLeft();
@@ -355,16 +350,16 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
       colour2 = arrowOnColour;
     }
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
   if (moveRight) {
     if (tempIndex > 0) {
       table.moveRight();
