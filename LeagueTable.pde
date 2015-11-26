@@ -18,9 +18,10 @@ class LeagueTable {
   private float rowHeight;
   private float padding;
   private float speed;
+  private int year;
 
   //Constructor method
-  LeagueTable(float noOfTeams) {
+  LeagueTable(float noOfTeams, int year) {
     tableMargin = width * 0.1f;
     tableTop = height * 0.1f;
     tableW = width - (tableMargin * 2);
@@ -39,12 +40,16 @@ class LeagueTable {
     rowHeight = tableH / noOfTeams;
     padding = rowHeight * 0.2f;
     speed = 19.0f;
+    this.year = year + 2014;
   }
 
   void renderTable(ArrayList<ArrayList<Team>> team, int year) {
     //Draw the table background
     fill(0);
     stroke(255);
+    textSize(36);
+    text(this.year, col2X - 20.0f, tableTop - rowHeight);
+    textSize(12);
     text("Pos", tableMargin + padding, tableTop - padding);
     text("Name", col1X + padding, tableTop - padding);
     text("Pld", col2X + padding, tableTop - padding);
@@ -146,5 +151,9 @@ class LeagueTable {
    this.col7X = col7X;
    this.col8X = col8X;
    this.col9X = col9X;
+  }
+  
+  void setYear(int year){
+   this.year = year ;
   }
 }

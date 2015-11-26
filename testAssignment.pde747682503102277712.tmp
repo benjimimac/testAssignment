@@ -60,7 +60,7 @@ void setup() {
   arrowOffColour = color(127, 127, 127);
   colour1 = arrowOnColour;
   colour2 = arrowOnColour;
-  table = new LeagueTable((float)premierLeague.get(0).size());
+  table = new LeagueTable((float)premierLeague.get(0).size(), year);
   tempIndex = 0;
   moveRight = false;
   moveLeft = false;
@@ -280,14 +280,24 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
   arrow2.renderArrow();
 
   color testColor = get(mouseX, mouseY);
-  if (testColor == colour1 && mousePressed && (mouseButton == LEFT) && mouseX < table.getTableMargin()) {
+  if (testColor == colour1 && mousePressed && (mouseButton == LEFT) && mouseX < table.getTableMargin() && !moveRight) {
     colour1 = arrowOffColour;
-    if (year > 1) {
-      table.moveLeft();
+    if (year > 0) {
+      minim = new Minim(this);
+      theme = minim.loadSnippet("go.mp3");
+      theme.rewind();
+      theme.play();
+      tempIndex = width;
+      moveRight = true;
     } else {
       //maybe play a soundfile
 
-      println("Reached the max.");
+      colour1 = arrowOnColour;
+
+      minim = new Minim(this);
+      theme = minim.loadSnippet("last.mp3");
+      theme.rewind();
+      theme.play();
     }
   }
 
@@ -307,17 +317,17 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
       minim = new Minim(this);
       theme = minim.loadSnippet("last.mp3");
       theme.rewind();
-      theme.play();
-      println("Reached the max.");
+      theme.play();      
     }
   }
-  println(tempIndex + ", " + moveLeft + ", " + year);
+  
   if (moveLeft) {
     if (tempIndex < 0) {
       table.moveLeft();
       tempIndex += 10.0f;
       if (tempIndex == -20.0f && year < team.size() - 1) {
         year += 1;
+        table.setYear(year + 2014);
         tempIndex = width;
       }
     } else if (tempIndex == width) {
@@ -343,6 +353,50 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
     } else {
       moveLeft = !moveLeft;
       colour2 = arrowOnColour;
+    }
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  if (moveRight) {
+    if (tempIndex > 0) {
+      table.moveRight();
+      tempIndex -= 10.0f;
+      if (tempIndex == +20.0f && year > 0) {
+        year -= 1;
+        table.setYear(year + 2014);
+        tempIndex = -width;
+      }
+    } else if (tempIndex == -width) {
+      //reset the LeagueTable fields to be on the opposite side of the screen
+      float tempMargin = -width + (width * 0.1f) + 5.0f;
+      float tempColumn1 = tempMargin + (table.getTableW() * table.getColScaleA());
+      float tempColumn2 = tempColumn1 + (table.getTableW() * table.getColScaleB());
+      float tempColumn3 = tempColumn2 + (table.getTableW() * table.getColScaleA());
+      float tempColumn4 = tempColumn3 + (table.getTableW() * table.getColScaleA());
+      float tempColumn5 = tempColumn4 + (table.getTableW() * table.getColScaleA());
+      float tempColumn6 = tempColumn5 + (table.getTableW() * table.getColScaleA());
+      float tempColumn7 = tempColumn6 + (table.getTableW() * table.getColScaleA());
+      float tempColumn8 = tempColumn7 + (table.getTableW() * table.getColScaleA());
+      float tempColumn9 = tempColumn8 + (table.getTableW() * table.getColScaleA());
+      table.setTableMargin(tempMargin);
+      table.setColumns(tempColumn1, tempColumn2, tempColumn3, tempColumn4, tempColumn5, tempColumn6, tempColumn7, tempColumn8, tempColumn9);
+      table.moveRight();
+      table.moveRight();
+      tempIndex += 20.0f;
+    } else if (tempIndex < 0) {
+      table.moveRight();
+      tempIndex += 20.0f;
+    } else {
+      moveRight = !moveRight;
+      colour1 = arrowOnColour;
     }
   }
 }
