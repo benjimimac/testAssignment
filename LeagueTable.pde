@@ -17,6 +17,7 @@ class LeagueTable {
   private float col9X;
   private float rowHeight;
   private float padding;
+  private float speed;
 
   //Constructor method
   LeagueTable(float noOfTeams) {
@@ -37,6 +38,7 @@ class LeagueTable {
     col9X = col8X + (tableW * colScaleA);
     rowHeight = tableH / noOfTeams;
     padding = rowHeight * 0.2f;
+    speed = 19.0f;
   }
 
   void renderTable(ArrayList<ArrayList<Team>> team, int year) {
@@ -73,15 +75,15 @@ class LeagueTable {
       rect(tableMargin, tableTop + (rowHeight * i), tableW, rowHeight);
       fill(255);
       text(i + 1, posX, textY);
-      text(team.get(0).get(i).getName(), nameX, textY);
-      text(team.get(0).get(i).played, pldX, textY);
-      text(team.get(0).get(i).wins, wX, textY);
-      text(team.get(0).get(i).draws, dX, textY);
-      text(team.get(0).get(i).loses, lX, textY);
-      text(team.get(0).get(i).goalsFor, gPX, textY);
-      text(team.get(0).get(i).goalsAgainst, gMX, textY);
-      text(team.get(0).get(i).goalDifference, gDX, textY);
-      text(team.get(0).get(i).points, ptsX, textY);
+      text(team.get(year).get(i).getName(), nameX, textY);
+      text(team.get(year).get(i).played, pldX, textY);
+      text(team.get(year).get(i).wins, wX, textY);
+      text(team.get(year).get(i).draws, dX, textY);
+      text(team.get(year).get(i).loses, lX, textY);
+      text(team.get(year).get(i).goalsFor, gPX, textY);
+      text(team.get(year).get(i).goalsAgainst, gMX, textY);
+      text(team.get(year).get(i).goalDifference, gDX, textY);
+      text(team.get(year).get(i).points, ptsX, textY);
     }
 
     line(col1X, tableTop, col1X, tableH + tableTop);
@@ -96,10 +98,13 @@ class LeagueTable {
   }
   
   void moveLeft(){
-    tableMargin -= 1.0f;
-    tableTop -= 1.0f;
-    tableW = 1.0f;
-    tableH = 1.0f;
+    setTableMargin(tableMargin - speed);
+    setColumns(col1X - speed, col2X - speed, col3X - speed, col4X - speed, col5X - speed, col6X - speed, col7X - speed, col8X - speed, col9X - speed);
+  }
+  
+  void moveRight(){
+    setTableMargin(tableMargin + speed);
+    setColumns(col1X + speed, col2X + speed, col3X + speed, col4X + speed, col5X + speed, col6X + speed, col7X + speed, col8X + speed, col9X + speed);
   }
 
   //Getter and setter methods
@@ -113,5 +118,33 @@ class LeagueTable {
 
   float getTableW() {
     return tableW;
+  }
+  
+  float getColScaleA(){
+   return colScaleA; 
+  }
+  
+  float getColScaleB(){
+   return colScaleB; 
+  }
+  
+  float getSpeed(){
+   return speed; 
+  }
+  
+  void setTableMargin(float tableMargin){
+    this.tableMargin = tableMargin;  
+  }
+  
+  void setColumns(float col1X, float col2X, float col3X, float col4X, float col5X, float col6X, float col7X, float col8X, float col9X){
+   this.col1X = col1X;
+   this.col2X = col2X;
+   this.col3X = col3X;
+   this.col4X = col4X;
+   this.col5X = col5X;
+   this.col6X = col6X;
+   this.col7X = col7X;
+   this.col8X = col8X;
+   this.col9X = col9X;
   }
 }

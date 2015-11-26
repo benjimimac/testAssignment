@@ -1,3 +1,10 @@
+import ddf.minim.*;
+
+
+AudioSnippet theme;
+Minim minim;
+
+
 final int SEASONS = 10;  //This is a constant variable - there are 10 seasons
 int index = 0;
 //create ArrayLists to store obects in
@@ -22,6 +29,9 @@ color arrowOnColour;
 color arrowOffColour;
 color colour1;
 color colour2;
+float tempIndex;
+boolean moveRight;
+boolean moveLeft;
 
 /*Setup method will prepare all the relevant data before anythiing has to be implemented
  */
@@ -43,7 +53,7 @@ void setup() {
 
   //Set the menu option to 0 for main menu
   menu = 1;
-  year = 1;
+  year = 0;
 
 
   arrowOnColour = color(222, 194, 116);
@@ -51,8 +61,11 @@ void setup() {
   colour1 = arrowOnColour;
   colour2 = arrowOnColour;
   table = new LeagueTable((float)premierLeague.get(0).size());
+  tempIndex = 0;
+  moveRight = false;
+  moveLeft = false;
 
-    //println(premierLeague.get(0).size());
+  //println(premierLeague.get(0).size());
 }//end setup() method
 
 void draw() {
@@ -63,7 +76,13 @@ void draw() {
     mainMenu();
     break;
   case 1:
-    showLeagueTable(premierLeague, table, year);
+    //minim = new Minim(this);
+    //theme = minim.loadSnippet("motd.mp3");
+    //theme.rewind();
+    //theme.play();
+
+
+    showLeagueTable(premierLeague, table);
     break;
   }
 }
@@ -207,17 +226,17 @@ void showTable() {
  drawArrow(tableSide + tableW + padding, 230, tableSide + tableW + padding, 270, width - padding, 250, false);
  }
  */
-
+/*
 void drawArrow(float x1, float y1, float x2, float y2, float x3, float y3, boolean onButton) {
-  if (onButton) {
-    fill(191, 185, 165);
-    stroke(191, 185, 165);
-  } else {
-    fill(222, 194, 116);
-    stroke(222, 194, 116);
-  }
-  triangle(x1, y1, x2, y2, x3, y3);
-}
+ if (onButton) {
+ fill(191, 185, 165);
+ stroke(191, 185, 165);
+ } else {
+ fill(222, 194, 116);
+ stroke(222, 194, 116);
+ }
+ triangle(x1, y1, x2, y2, x3, y3);
+ }*/
 
 int[] getColour(int index) {
   int[] colour = new int[3];
@@ -249,27 +268,81 @@ int[] getColour(int index) {
   }
 }
 
-void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table, int year) {
+void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
 
 
   Arrow arrow1 = new Arrow(45.0f, (float)230, 45.0f, (float)270, 5.0f, (float)250, colour1);
   Arrow arrow2 = new Arrow(width - 45.0f, 230.0f, width - 45.0f, (float)270, width - 5.0f, (float)250, colour2);
   //drawArrow(tableSide + tableW + padding, 230, tableSide + tableW + padding, 270, width - padding, 250, false);
-  table.renderTable(team, 1);
+  table.renderTable(team, year);
 
   arrow1.renderArrow();
   arrow2.renderArrow();
+
   color testColor = get(mouseX, mouseY);
   if (testColor == colour1 && mousePressed && (mouseButton == LEFT) && mouseX < table.getTableMargin()) {
     colour1 = arrowOffColour;
-    if (year > 0) {
+    if (year > 1) {
       table.moveLeft();
+    } else {
+      //maybe play a soundfile
+
+      println("Reached the max.");
     }
   }
-  if (testColor == colour2 && mousePressed && (mouseButton == LEFT) && mouseX > table.getTableMargin() + table.getPadding()) {
+
+  if (testColor == colour2 && mousePressed && (mouseButton == LEFT) && mouseX > table.getTableMargin() + table.getPadding() && !moveLeft) {
     colour2 = arrowOffColour;
-    if (year < team.get(year).size()) {
-      //table.moveRight();
+    if (year < team.size() - 1) {
+      minim = new Minim(this);
+      theme = minim.loadSnippet("go.mp3");
+      theme.rewind();
+      theme.play();
+      tempIndex = -width;
+      moveLeft = true;
+    } else {
+      //maybe play a soundfile
+      colour2 = arrowOnColour;
+
+      minim = new Minim(this);
+      theme = minim.loadSnippet("last.mp3");
+      theme.rewind();
+      theme.play();
+      println("Reached the max.");
+    }
+  }
+  println(tempIndex + ", " + moveLeft + ", " + year);
+  if (moveLeft) {
+    if (tempIndex < 0) {
+      table.moveLeft();
+      tempIndex += 10.0f;
+      if (tempIndex == -20.0f && year < team.size() - 1) {
+        year += 1;
+        tempIndex = width;
+      }
+    } else if (tempIndex == width) {
+      //reset the LeagueTable fields to be on the opposite side of the screen
+      float tempMargin = width + (width * 0.1f) - 5.0f;
+      float tempColumn1 = tempMargin + (table.getTableW() * table.getColScaleA());
+      float tempColumn2 = tempColumn1 + (table.getTableW() * table.getColScaleB());
+      float tempColumn3 = tempColumn2 + (table.getTableW() * table.getColScaleA());
+      float tempColumn4 = tempColumn3 + (table.getTableW() * table.getColScaleA());
+      float tempColumn5 = tempColumn4 + (table.getTableW() * table.getColScaleA());
+      float tempColumn6 = tempColumn5 + (table.getTableW() * table.getColScaleA());
+      float tempColumn7 = tempColumn6 + (table.getTableW() * table.getColScaleA());
+      float tempColumn8 = tempColumn7 + (table.getTableW() * table.getColScaleA());
+      float tempColumn9 = tempColumn8 + (table.getTableW() * table.getColScaleA());
+      table.setTableMargin(tempMargin);
+      table.setColumns(tempColumn1, tempColumn2, tempColumn3, tempColumn4, tempColumn5, tempColumn6, tempColumn7, tempColumn8, tempColumn9);
+      table.moveLeft();
+      table.moveLeft();
+      tempIndex -= 20.0f;
+    } else if (tempIndex > 0) {
+      table.moveLeft();
+      tempIndex -= 20.0f;
+    } else {
+      moveLeft = !moveLeft;
+      colour2 = arrowOnColour;
     }
   }
 }
