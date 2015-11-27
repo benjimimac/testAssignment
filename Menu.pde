@@ -1,59 +1,59 @@
 class Menu {
   //Menu fields
-  private float[] buttonX;
-  private float[] buttonY;
   private int noOfButtons;
   private String[] buttonLabel;
+  private String title;
 
   //Constructor methods
-  Menu(int noOfButtons, String leagueA, String leagueB, String leagueC, String leagueD) {
-    this.buttonX = new float[noOfButtons];
-    this.buttonY = new float[noOfButtons];
-    buttonLabel = new String[4];
-    
+  Menu(int noOfButtons, String buttonLabel[], String title) {
+    this.buttonLabel = new String[noOfButtons];
+    this.title = title;
+
     this.noOfButtons = noOfButtons;
-    buttonLabel[0] = leagueA;
-    buttonLabel[1] = leagueB;
-    buttonLabel[2] = leagueC;
-    buttonLabel[3] = leagueD;
-    
-    float tempX = width / 3.0f;
-    float tempY = height / (float)(noOfButtons * 2);    
-    for(int i = 0; i < noOfButtons; i++){
-      buttonX[i] = tempX;
-      buttonY[i] = tempY;
-      tempY += height / (float)(noOfButtons);
+    for (int i = 0; i < noOfButtons; i++) {
+      this.buttonLabel[i] = buttonLabel[i];
+      println(this.buttonLabel[i]);
     }
   }
-  
+
   //render method
-  void renderMenu(int count){
-   background(0, 0, 255);
-   ////rectMode(CENTER);
-   //textAlign(CENTER, CENTER);
-    
-   //for(int i = 0; i < noOfButtons; i++){
-   //  fill(255);
-   //  rect(buttonX[i], buttonY[i], width / 3.0f, (height / 2) / (noOfButtons + 1));
-   //  fill(0);
-   //  textSize(20);
-   //  text(buttonLabel[i], width / 2.0f, buttonY[i] + 30);
-   //  textSize(12);
-   //}
-   //ArrayList<Rectangle> button = new ArrayList<Rectangle>();
-   Rectangle button = new Rectangle();
-   button.setButtonX(width / 2.0f);
-   int tempCount = 0;
-   for(int i = -count + 1; i < count; i++){
-     
-     if(i % 2 == 1 || i % 2 == -1){
-       button.setButtonY((height / 2) + button.getButtonH() * i);
-       button.setLabel(buttonLabel[tempCount]);
-       button.renderRectangle();
-       tempCount++;
-     }
-   }
-   
-   
+  void renderMenu() {
+    background(0, 0, 255);
+    Button button = new Button();
+    button.setButtonX(width / 2.0f);
+    int tempCount = 0;
+    textSize(30);
+    text(title, width / 2.0f, height * 0.1f);
+    textSize(12);
+    for (int i = -noOfButtons + 1; i < noOfButtons; i++) {
+
+      if (noOfButtons % 2 == 0) {
+        if (i % 2 == 1 || i % 2 == -1) {
+          button.setButtonY(((height + 100) / 2) + button.getButtonH() * i);
+          button.setLabel(buttonLabel[tempCount]);
+          button.renderButton();
+          boolean backOne = button.checkPressed();
+          println(backOne);
+          tempCount++;
+          if (backOne) {
+            pressed = true;
+            menu = tempCount + 1;
+          }
+        }
+      } else {
+        if (i % 2 == 0) {
+          button.setButtonY((height / 2) + button.getButtonH() * i);
+          button.setLabel(buttonLabel[tempCount]);
+          button.renderButton();
+          boolean backOne = button.checkPressed();
+          println(backOne);
+          tempCount++;
+          if (backOne) {
+            pressed = true;
+            menu = tempCount + 1;
+          }
+        }
+      }
+    }
   }
 }

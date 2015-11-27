@@ -1,4 +1,11 @@
 import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.effects.*;
+import ddf.minim.signals.*;
+import ddf.minim.spi.*;
+import ddf.minim.ugens.*;
+
+import ddf.minim.*;
 
 
 AudioSnippet theme;
@@ -21,7 +28,9 @@ ArrayList<ArrayList<Team>> seriea = new ArrayList<ArrayList<Team>>();
 ArrayList<ArrayList<HomeTeam>> serieHome = new ArrayList<ArrayList<HomeTeam>>();
 ArrayList<ArrayList<AwayTeam>> serieAway = new ArrayList<ArrayList<AwayTeam>>();
 LeagueTable table;
-Menu mainMenu;
+Menu teamSelect;
+Button returnButton;
+boolean pressed;
 
 //Global variable to store current menu option
 int menu;
@@ -40,7 +49,7 @@ void setup() {
   //Setup the sketch
   size(600, 600);
   background(252, 252, 252);
-  
+
 
   //call the loadData() method and pass the filenames and ArrayList objects
   loadData("premier_league.csv", premierLeague, premHome, premAway);
@@ -54,12 +63,15 @@ void setup() {
   sortList(liga);
   sortList(seriea);
 
-  mainMenu = new Menu(4, "Premier League", "Bundesliga", "La Liga", "Serie A");
+  String[] leagueNames = {"Premier League", "Bundesliga", "La Liga", "Serie A"};
+  teamSelect = new Menu(4, leagueNames, "Please Select A league");
 
   //Set the menu option to 0 for main menu
-  menu = 0;
+  menu = 1;
   year = 0;
 
+  returnButton = new Button();
+  pressed = false;
 
   arrowOnColour = color(222, 194, 116);
   arrowOffColour = color(127, 127, 127);
@@ -77,18 +89,71 @@ void draw() {
   background(255);
   //Switch case to select the menu options
   switch (menu) {
-  case 0:
-
-    mainMenu.renderMenu(4);
-    break;
   case 1:
-    //minim = new Minim(this);
-    //theme = minim.loadSnippet("motd.mp3");
-    //theme.rewind();
-    //theme.play();
+    if (pressed) {
+      minim = new Minim(this);
+      theme = minim.loadSnippet("go.mp3");
+      theme.rewind();
+      theme.play();
+      pressed = !pressed;
+    }
+    teamSelect.renderMenu();
+    checkButton();
+    break;
+  case 2:
+    if (pressed) {
+      minim = new Minim(this);
+      theme = minim.loadSnippet("go.mp3");
+      theme.rewind();
+      theme.play();
+      pressed = !pressed;
+    }
+
 
     background(192, 231, 249);
     showLeagueTable(premierLeague, table);
+    break;
+    
+    case 3:
+    if (pressed) {
+      minim = new Minim(this);
+      theme = minim.loadSnippet("go.mp3");
+      theme.rewind();
+      theme.play();
+      pressed = !pressed;
+    }
+
+
+    background(192, 231, 249);
+    showLeagueTable(bundesliga, table);
+    break;
+    
+    case 4:
+    if (pressed) {
+      minim = new Minim(this);
+      theme = minim.loadSnippet("go.mp3");
+      theme.rewind();
+      theme.play();
+      pressed = !pressed;
+    }
+
+
+    background(192, 231, 249);
+    showLeagueTable(liga, table);
+    break;
+    
+    case 5:
+    if (pressed) {
+      minim = new Minim(this);
+      theme = minim.loadSnippet("go.mp3");
+      theme.rewind();
+      theme.play();
+      pressed = !pressed;
+    }
+
+
+    background(192, 231, 249);
+    showLeagueTable(seriea, table);
     break;
   }
 }
@@ -208,30 +273,8 @@ void sortList(ArrayList<ArrayList<Team>> teams) {
   }
 }
 
-void mainMenu() {
-}
 
-/*
-void showTable() {
- 
- 
- 
- leagueTable.getTableMargin() - leagueTable.getPadding(), 230, leagueTable.getMargin - leagueTable.getPadding, 270, width - leagueTable.getPadding(), 250 
- drawArrow(tableSide - padding, 230, tableSide - padding, 270, padding, 250, false);
- drawArrow(tableSide + tableW + padding, 230, tableSide + tableW + padding, 270, width - padding, 250, false);
- }
- */
-/*
-void drawArrow(float x1, float y1, float x2, float y2, float x3, float y3, boolean onButton) {
- if (onButton) {
- fill(191, 185, 165);
- stroke(191, 185, 165);
- } else {
- fill(222, 194, 116);
- stroke(222, 194, 116);
- }
- triangle(x1, y1, x2, y2, x3, y3);
- }*/
+
 
 int[] getColour(int index) {
   int[] colour = new int[3];
@@ -278,7 +321,7 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
   if (testColor == colour1 && mousePressed && (mouseButton == LEFT) && mouseX < table.getTableMargin() && !moveRight) {
     colour1 = arrowOffColour;
     if (year > 0) {
-      minim = new Minim(this);
+      //minim = new Minim(this);
       theme = minim.loadSnippet("go.mp3");
       theme.rewind();
       theme.play();
@@ -309,7 +352,7 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
       //maybe play a soundfile
       colour2 = arrowOnColour;
 
-      minim = new Minim(this);
+      //minim = new Minim(this);
       theme = minim.loadSnippet("whistle.mp3");
       theme.rewind();
       theme.play();
@@ -322,7 +365,7 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
       tempIndex += 10.0f;
       if (tempIndex == -20.0f && year < team.size() - 1) {
         year += 1;
-        table.setYear(year + 2014);
+        table.setYear(year + 2004);
         tempIndex = width;
       }
     } else if (tempIndex == width) {
@@ -364,9 +407,9 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
     if (tempIndex > 0) {
       table.moveRight();
       tempIndex -= 10.0f;
-      if (tempIndex == +20.0f && year > 0) {
+      if (tempIndex == 20.0f && year > 0) {
         year -= 1;
-        table.setYear(year + 2014);
+        table.setYear(year + 2004);
         tempIndex = -width;
       }
     } else if (tempIndex == -width) {
@@ -394,4 +437,7 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
       colour1 = arrowOnColour;
     }
   }
+}
+
+void checkButton() {
 }

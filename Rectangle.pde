@@ -1,6 +1,7 @@
 class Rectangle extends Button{
   //Fields
   private String label;
+  private color colour;
   
   //Constructor method
   Rectangle(){
@@ -19,9 +20,12 @@ class Rectangle extends Button{
     textSize(12);
   }
   
-  float getButtonH(){
-   return buttonH; 
-  }
+  //void checkPressed(){
+  //  if((mousePressed) && (mouseButton == LEFT) && (mouseX > x1 - (buttonW / 2.0f)) && (mouseX < x1 + (buttonW / 2.0f)) && (mouseY > y1 - (buttonH / 2.0f)) && (mouseY < y1 + (buttonH / 2.0f))){
+  //   println("Mouse clicked");
+  //   menu = 2;
+  //  }
+  //}
   
   void setLabel(String label){
   this.label = label; 

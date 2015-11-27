@@ -40,11 +40,13 @@ class LeagueTable {
     rowHeight = tableH / noOfTeams;
     padding = rowHeight * 0.2f;
     speed = 19.0f;
-    this.year = year + 2014;
+    this.year = year + 2004;
   }
 
   void renderTable(ArrayList<ArrayList<Team>> team, int year) {
     //Draw the table background
+    rectMode(CORNER);
+    textAlign(CORNER, CORNER);
     fill(0);
     stroke(255);
     textSize(36);
@@ -100,6 +102,17 @@ class LeagueTable {
     line(col7X, tableTop, col7X, tableH + tableTop);
     line(col8X, tableTop, col8X, tableH + tableTop);
     line(col9X, tableTop, col9X, tableH + tableTop);
+    
+    
+    returnButton.setButtonX(width / 2.0f);
+    returnButton.setButtonY(height - 30.0f);
+    returnButton.setLabel("Return");
+    returnButton.renderButton();
+    boolean backOne = returnButton.checkPressed();
+    if(backOne){
+      menu = 1;
+      pressed = true;
+    }
   }
   
   void moveLeft(){
