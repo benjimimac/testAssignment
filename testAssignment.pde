@@ -1,14 +1,7 @@
 import ddf.minim.*;
-import ddf.minim.analysis.*;
-import ddf.minim.effects.*;
-import ddf.minim.signals.*;
-import ddf.minim.spi.*;
-import ddf.minim.ugens.*;
-
-import ddf.minim.*;
-
 
 AudioSnippet theme;
+AudioSnippet buttonPress;
 Minim minim;
 
 
@@ -28,12 +21,15 @@ ArrayList<ArrayList<Team>> seriea = new ArrayList<ArrayList<Team>>();
 ArrayList<ArrayList<HomeTeam>> serieHome = new ArrayList<ArrayList<HomeTeam>>();
 ArrayList<ArrayList<AwayTeam>> serieAway = new ArrayList<ArrayList<AwayTeam>>();
 LeagueTable table;
+Menu mainMenu;
 Menu teamSelect;
 Button returnButton;
 boolean pressed;
 
 //Global variable to store current menu option
 int menu;
+int subMenu;
+
 int year;
 color arrowOnColour;
 color arrowOffColour;
@@ -42,6 +38,8 @@ color colour2;
 float tempIndex;
 boolean moveRight;
 boolean moveLeft;
+int currentX;
+int currentY;
 
 /*Setup method will prepare all the relevant data before anythiing has to be implemented
  */
@@ -63,11 +61,14 @@ void setup() {
   sortList(liga);
   sortList(seriea);
 
+  String[] mainOptions = {"View League"};
   String[] leagueNames = {"Premier League", "Bundesliga", "La Liga", "Serie A"};
+  mainMenu = new Menu(1, mainOptions, "Welcome To Football Fever\nPlease Select An Option");
   teamSelect = new Menu(4, leagueNames, "Please Select A league");
 
   //Set the menu option to 0 for main menu
-  menu = 1;
+  menu = 0;
+  subMenu = 0;
   year = 0;
 
   returnButton = new Button();
@@ -82,79 +83,40 @@ void setup() {
   moveRight = false;
   moveLeft = false;
 
+
+  minim = new Minim(this);
   //println(premierLeague.get(0).size());
 }//end setup() method
 
 void draw() {
   background(255);
+  println("menu is " + menu + " subMenu is " + subMenu);
   //Switch case to select the menu options
   switch (menu) {
+  case 0:
+    mainMenu.renderMenu();
+    break;
   case 1:
     if (pressed) {
-      minim = new Minim(this);
-      theme = minim.loadSnippet("go.mp3");
-      theme.rewind();
-      theme.play();
+
+      buttonPress = minim.loadSnippet("go.mp3");
+      buttonPress.rewind();
+      buttonPress.play();
       pressed = !pressed;
     }
-    teamSelect.renderMenu();
-    checkButton();
+    viewLeagueMenu();
+
+    //checkButton();
     break;
   case 2:
-    if (pressed) {
-      minim = new Minim(this);
-      theme = minim.loadSnippet("go.mp3");
-      theme.rewind();
-      theme.play();
-      pressed = !pressed;
-    }
 
-
-    background(192, 231, 249);
-    showLeagueTable(premierLeague, table);
     break;
-    
-    case 3:
-    if (pressed) {
-      minim = new Minim(this);
-      theme = minim.loadSnippet("go.mp3");
-      theme.rewind();
-      theme.play();
-      pressed = !pressed;
-    }
 
+  
 
-    background(192, 231, 249);
-    showLeagueTable(bundesliga, table);
-    break;
-    
-    case 4:
-    if (pressed) {
-      minim = new Minim(this);
-      theme = minim.loadSnippet("go.mp3");
-      theme.rewind();
-      theme.play();
-      pressed = !pressed;
-    }
+  
 
-
-    background(192, 231, 249);
-    showLeagueTable(liga, table);
-    break;
-    
-    case 5:
-    if (pressed) {
-      minim = new Minim(this);
-      theme = minim.loadSnippet("go.mp3");
-      theme.rewind();
-      theme.play();
-      pressed = !pressed;
-    }
-
-
-    background(192, 231, 249);
-    showLeagueTable(seriea, table);
-    break;
+  
   }
 }
 
@@ -439,5 +401,64 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
   }
 }
 
+void viewLeagueMenu() {
+  switch(subMenu) {
+  case 0:
+    teamSelect.renderMenu();
+    break;
+
+  case 1:
+    if (pressed) {
+      //minim = new Minim(this);
+      buttonPress = minim.loadSnippet("go.mp3");
+      buttonPress.rewind();
+      buttonPress.play();
+      pressed = !pressed;
+    }
+    background(192, 231, 249);
+    showLeagueTable(premierLeague, table);
+    break;
+    
+    case 2:
+    if (pressed) {
+      buttonPress = minim.loadSnippet("go.mp3");
+      buttonPress.rewind();
+      buttonPress.play();
+      pressed = !pressed;
+    }
+    background(192, 231, 249);
+    showLeagueTable(bundesliga, table);
+    break;
+    
+    case 3:
+    if (pressed) {
+      buttonPress = minim.loadSnippet("go.mp3");
+      buttonPress.rewind();
+      buttonPress.play();
+      pressed = !pressed;
+    }
+    background(192, 231, 249);
+    showLeagueTable(liga, table);
+    break;
+    
+    case 4:
+    if (pressed) {
+      buttonPress = minim.loadSnippet("go.mp3");
+      buttonPress.rewind();
+      buttonPress.play();
+      pressed = !pressed;
+    }
+    background(192, 231, 249);
+    showLeagueTable(seriea, table);
+    break;
+  }
+}
+
+void mouseClicked(){
+  currentX = mouseX;
+  currentY = mouseY;
+}
+
 void checkButton() {
+  
 }

@@ -39,9 +39,9 @@ class Button {
   }
   
   boolean checkPressed(){
-    if((mousePressed) && (mouseButton == LEFT) && (mouseX > x1 - (buttonW / 2.0f)) && (mouseX < x1 + (buttonW / 2.0f)) && (mouseY > y1 - (buttonH / 2.0f)) && (mouseY < y1 + (buttonH / 2.0f))){
-     //println("Mouse clicked");
-     //menu = 2;
+    if((currentX > x1 - (buttonW / 2.0f)) && (currentX < x1 + (buttonW / 2.0f)) && (currentY > y1 - (buttonH / 2.0f)) && (currentY < y1 + (buttonH / 2.0f))){
+     currentX = 0;
+     currentY = 0;
      return true;
     }
     return false;

@@ -32,12 +32,16 @@ class Menu {
           button.setButtonY(((height + 100) / 2) + button.getButtonH() * i);
           button.setLabel(buttonLabel[tempCount]);
           button.renderButton();
-          boolean backOne = button.checkPressed();
-          println(backOne);
+          boolean buttonSelected = button.checkPressed();
           tempCount++;
-          if (backOne) {
+          if (buttonSelected) {
             pressed = true;
-            menu = tempCount + 1;
+            if (menu == 0) {
+              menu = tempCount;
+              subMenu = 0;
+            } else {
+              subMenu = tempCount;
+            }
           }
         }
       } else {
@@ -45,13 +49,34 @@ class Menu {
           button.setButtonY((height / 2) + button.getButtonH() * i);
           button.setLabel(buttonLabel[tempCount]);
           button.renderButton();
-          boolean backOne = button.checkPressed();
-          println(backOne);
+          boolean buttonSelected = button.checkPressed();
           tempCount++;
-          if (backOne) {
+          if (buttonSelected) {
             pressed = true;
-            menu = tempCount + 1;
+            if (menu == 0) {
+              menu = tempCount;
+              subMenu = 0;
+            } else {
+              subMenu = tempCount;
+            }
           }
+        }
+      }
+    }
+    if (menu != 0) {
+      returnButton.setButtonX(width / 2.0f);
+      returnButton.setButtonY(height - 30.0f);
+      returnButton.setLabel("Return");
+      returnButton.renderButton();
+      boolean backOne = returnButton.checkPressed();
+      if (backOne) {
+        if (subMenu != 0) {
+          subMenu = 0;
+          pressed = true;
+        }
+        else{
+         menu = 0;
+         pressed = true;
         }
       }
     }

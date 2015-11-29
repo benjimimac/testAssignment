@@ -25,7 +25,7 @@ class LeagueTable {
     tableMargin = width * 0.1f;
     tableTop = height * 0.1f;
     tableW = width - (tableMargin * 2);
-    tableH = width - (tableTop * 2);
+    tableH = height - (tableTop * 2);
     colScaleA = 0.0714285f;
     colScaleB = 0.3571428f;
     col1X = tableMargin + (tableW * colScaleA);
@@ -93,15 +93,15 @@ class LeagueTable {
       text(team.get(year).get(i).points, ptsX, textY);
     }
 
-    line(col1X, tableTop, col1X, tableH + tableTop);
-    line(col2X, tableTop, col2X, tableH + tableTop);
-    line(col3X, tableTop, col3X, tableH + tableTop);
-    line(col4X, tableTop, col4X, tableH + tableTop);
-    line(col5X, tableTop, col5X, tableH + tableTop);
-    line(col6X, tableTop, col6X, tableH + tableTop);
-    line(col7X, tableTop, col7X, tableH + tableTop);
-    line(col8X, tableTop, col8X, tableH + tableTop);
-    line(col9X, tableTop, col9X, tableH + tableTop);
+    line(col1X, tableTop, col1X, (rowHeight * team.get(year).size())  + tableTop);
+    line(col2X, tableTop, col2X, (rowHeight * team.get(year).size()) + tableTop);
+    line(col3X, tableTop, col3X, (rowHeight * team.get(year).size()) + tableTop);
+    line(col4X, tableTop, col4X, (rowHeight * team.get(year).size()) + tableTop);
+    line(col5X, tableTop, col5X, (rowHeight * team.get(year).size()) + tableTop);
+    line(col6X, tableTop, col6X, (rowHeight * team.get(year).size()) + tableTop);
+    line(col7X, tableTop, col7X, (rowHeight * team.get(year).size()) + tableTop);
+    line(col8X, tableTop, col8X, (rowHeight * team.get(year).size()) + tableTop);
+    line(col9X, tableTop, col9X, (rowHeight * team.get(year).size()) + tableTop);
     
     
     returnButton.setButtonX(width / 2.0f);
@@ -110,7 +110,7 @@ class LeagueTable {
     returnButton.renderButton();
     boolean backOne = returnButton.checkPressed();
     if(backOne){
-      menu = 1;
+      subMenu = 0;
       pressed = true;
     }
   }
