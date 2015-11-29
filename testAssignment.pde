@@ -61,7 +61,7 @@ void setup() {
   sortList(liga);
   sortList(seriea);
 
-  String[] mainOptions = {"View League"};
+  String[] mainOptions = {"View Tables"};
   String[] leagueNames = {"Premier League", "Bundesliga", "La Liga", "Serie A"};
   mainMenu = new Menu(1, mainOptions, "Welcome To Football Fever\nPlease Select An Option");
   teamSelect = new Menu(4, leagueNames, "Please Select A league");
@@ -78,7 +78,7 @@ void setup() {
   arrowOffColour = color(127, 127, 127);
   colour1 = arrowOnColour;
   colour2 = arrowOnColour;
-  table = new LeagueTable((float)premierLeague.get(0).size(), year);
+  table = new LeagueTable((float)premierLeague.get(0).size(), year, leagueNames);
   tempIndex = 0;
   moveRight = false;
   moveLeft = false;
@@ -94,6 +94,13 @@ void draw() {
   //Switch case to select the menu options
   switch (menu) {
   case 0:
+  if (pressed) {
+
+      buttonPress = minim.loadSnippet("go.mp3");
+      buttonPress.rewind();
+      buttonPress.play();
+      pressed = !pressed;
+    }
     mainMenu.renderMenu();
     break;
   case 1:
