@@ -20,9 +20,12 @@ class LeagueTable {
   private float speed;
   private int year;
   private String[] leagueNames;
+  private String[] leagueType;
+  private int league;
+  private int type;
 
   //Constructor method
-  LeagueTable(float noOfTeams, int year, String[] leagueNames) {
+  LeagueTable(/*int league, int type, */int year, String[] leagueNames, String[] leagueType) {
     tableMargin = width * 0.1f;
     tableTop = height * 0.1f;
     tableW = width - (tableMargin * 2);
@@ -38,14 +41,17 @@ class LeagueTable {
     col7X = col6X + (tableW * colScaleA);
     col8X = col7X + (tableW * colScaleA);
     col9X = col8X + (tableW * colScaleA);
-    rowHeight = tableH / noOfTeams;
+    rowHeight = tableH / (float)leagueFull.get(league).get(0).size();
     padding = rowHeight * 0.2f;
     speed = 19.0f;
     this.year = year + 2004;
     this.leagueNames = leagueNames;
+    this.leagueType = leagueType;
+    this.league = 0;
+    this.type = 0;
   }
 
-  void renderTable(ArrayList<ArrayList<Team>> team, int year) {
+  void renderTable() {
     //Draw the table background
     rectMode(CORNER);
     textAlign(CORNER, CORNER);
@@ -53,7 +59,7 @@ class LeagueTable {
     stroke(255);
     textSize(36);
     textAlign(CENTER);
-    text(leagueNames[subMenu - 1] + " " + this.year + "/" + (this.year - 1999), width / 2, tableTop - rowHeight);
+    text(leagueNames[league] + " " + leagueType[type] + " " + this.year + "/" + (this.year - 1999), width / 2, tableTop - rowHeight);
     textAlign(CORNER);
     textSize(12);
     text("Pos", tableMargin + padding, tableTop - padding);
@@ -66,7 +72,7 @@ class LeagueTable {
     text("G-", col7X + padding, tableTop - padding);
     text("GD", col8X + padding, tableTop - padding);
     text("Pts", col9X + padding, tableTop - padding);
-    for (int i = 0; i < team.get(year).size(); i++) {
+    for (int i = 0; i < leagueFull.get(league).get(currentYear).size(); i++) {
       float textY = tableTop + rowHeight + (rowHeight * i) - padding;
       float posX = tableMargin + padding;
       float nameX = col1X + padding;
@@ -85,36 +91,47 @@ class LeagueTable {
       fill(colour[0], colour[1], colour[2]);
       rect(tableMargin, tableTop + (rowHeight * i), tableW, rowHeight);
       fill(255);
+      
+      Team temp;
+      if(type == 0){
+        temp = leagueFull.get(league).get(currentYear).get(i);
+      }else if(type == 1){
+        temp = leagueHome.get(league).get(currentYear).get(i);
+      }
+      else{
+       temp = leagueAway.get(league).get(currentYear).get(i); 
+      }
+      
       text(i + 1, posX, textY);
-      text(team.get(year).get(i).getName(), nameX, textY);
-      text(team.get(year).get(i).played, pldX, textY);
-      text(team.get(year).get(i).wins, wX, textY);
-      text(team.get(year).get(i).draws, dX, textY);
-      text(team.get(year).get(i).loses, lX, textY);
-      text(team.get(year).get(i).goalsFor, gPX, textY);
-      text(team.get(year).get(i).goalsAgainst, gMX, textY);
-      text(team.get(year).get(i).goalDifference, gDX, textY);
-      text(team.get(year).get(i).points, ptsX, textY);
+      text(temp.getTeamName(), nameX, textY);
+      text(temp.played, pldX, textY);
+      text(temp.wins, wX, textY);
+      text(temp.draws, dX, textY);
+      text(temp.loses, lX, textY);
+      text(temp.goalsFor, gPX, textY);
+      text(temp.goalsAgainst, gMX, textY);
+      text(temp.goalDifference, gDX, textY);
+      text(temp.points, ptsX, textY);
     }
 
-    line(col1X, tableTop, col1X, (rowHeight * team.get(year).size())  + tableTop);
-    line(col2X, tableTop, col2X, (rowHeight * team.get(year).size()) + tableTop);
-    line(col3X, tableTop, col3X, (rowHeight * team.get(year).size()) + tableTop);
-    line(col4X, tableTop, col4X, (rowHeight * team.get(year).size()) + tableTop);
-    line(col5X, tableTop, col5X, (rowHeight * team.get(year).size()) + tableTop);
-    line(col6X, tableTop, col6X, (rowHeight * team.get(year).size()) + tableTop);
-    line(col7X, tableTop, col7X, (rowHeight * team.get(year).size()) + tableTop);
-    line(col8X, tableTop, col8X, (rowHeight * team.get(year).size()) + tableTop);
-    line(col9X, tableTop, col9X, (rowHeight * team.get(year).size()) + tableTop);
+    line(col1X, tableTop, col1X, (rowHeight * leagueFull.get(league).get(currentYear).size())  + tableTop);
+    line(col2X, tableTop, col2X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
+    line(col3X, tableTop, col3X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
+    line(col4X, tableTop, col4X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
+    line(col5X, tableTop, col5X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
+    line(col6X, tableTop, col6X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
+    line(col7X, tableTop, col7X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
+    line(col8X, tableTop, col8X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
+    line(col9X, tableTop, col9X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
     
-    
+    Button returnButton = new Button();
     returnButton.setButtonX(width / 2.0f);
     returnButton.setButtonY(height - 30.0f);
     returnButton.setLabel("Return");
     returnButton.renderButton();
     boolean backOne = returnButton.checkPressed();
     if(backOne){
-      subMenu = 0;
+      subOption2 = 0;
       pressed = true;
     }
   }
@@ -172,5 +189,13 @@ class LeagueTable {
   
   void setYear(int year){
    this.year = year ;
+  }
+  
+  void setLeague(int league){
+   this.league = league; 
+  }
+  
+  void setType(int type){
+   this.type = type;
   }
 }

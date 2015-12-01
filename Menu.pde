@@ -12,7 +12,6 @@ class Menu {
     this.noOfButtons = noOfButtons;
     for (int i = 0; i < noOfButtons; i++) {
       this.buttonLabel[i] = buttonLabel[i];
-      println(this.buttonLabel[i]);
     }
   }
 
@@ -36,11 +35,14 @@ class Menu {
           tempCount++;
           if (buttonSelected) {
             pressed = true;
-            if (menu == 0) {
-              menu = tempCount;
-              subMenu = 0;
-            } else {
-              subMenu = tempCount;
+            if (mainOption == 0) {
+              mainOption = tempCount;
+              subOption1 = 0;
+            } else if(subOption1 == 0){
+              subOption1 = tempCount;
+              subOption2 = 0;
+            }else{
+             subOption2 = tempCount; 
             }
           }
         }
@@ -53,30 +55,36 @@ class Menu {
           tempCount++;
           if (buttonSelected) {
             pressed = true;
-            if (menu == 0) {
-              menu = tempCount;
-              subMenu = 0;
-            } else {
-              subMenu = tempCount;
+            if (mainOption == 0) {
+              mainOption = tempCount;
+              subOption1 = 0;
+            } else if(subOption1 == 0){
+              subOption1 = tempCount;
+              subOption2 = 0;
+            }else{
+             subOption2 = tempCount; 
             }
           }
         }
       }
     }
-    if (menu != 0) {
+    if (mainOption != 0) {
+      Button returnButton = new Button();
       returnButton.setButtonX(width / 2.0f);
       returnButton.setButtonY(height - 30.0f);
       returnButton.setLabel("Return");
       returnButton.renderButton();
       boolean backOne = returnButton.checkPressed();
       if (backOne) {
-        if (subMenu != 0) {
-          subMenu = 0;
+        if(subOption2 != 0){
+          subOption2 = 0;
           pressed = true;
-        }
-        else{
-         menu = 0;
-         pressed = true;
+        }else if (subOption1 != 0) {
+          subOption1 = 0;
+          pressed = true;
+        } else {
+          mainOption = 0;
+          pressed = true;
         }
       }
     }

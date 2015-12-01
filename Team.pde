@@ -1,6 +1,6 @@
 class Team {
   //class fields
-  private String name;
+  private String teamName;
   int goalsFor;
   int goalsAgainst;
   int goalDifference;
@@ -11,8 +11,8 @@ class Team {
   int played;
 
   //Constructor method
-  Team(String name, int goalsFor, int goalsAgainst) {
-    this.name = name;
+  Team(String teamName, int goalsFor, int goalsAgainst) {
+    this.teamName = teamName;
     this.goalsFor = goalsFor;
     this.goalsAgainst = goalsAgainst;
     goalDifference = goalsFor - goalsAgainst;
@@ -59,8 +59,8 @@ class Team {
   }//end editTeam() method
 
   //getters and setters go here
-  String getName() {
-    return name;
+  String getTeamName() {
+    return teamName;
   }//end getName method
   
   int getPoints(){

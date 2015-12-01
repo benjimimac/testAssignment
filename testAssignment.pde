@@ -1,250 +1,259 @@
 import ddf.minim.*;
 
 AudioSnippet theme;
-AudioSnippet buttonPress;
+AudioSnippet go;
+AudioSnippet stop;
 Minim minim;
 
 
+
 final int SEASONS = 10;  //This is a constant variable - there are 10 seasons
-int index = 0;
-//create ArrayLists to store obects in
-ArrayList<ArrayList<Team>> premierLeague = new ArrayList<ArrayList<Team>>();
-ArrayList<ArrayList<HomeTeam>> premHome = new ArrayList<ArrayList<HomeTeam>>();
-ArrayList<ArrayList<AwayTeam>> premAway = new ArrayList<ArrayList<AwayTeam>>();
-ArrayList<ArrayList<Team>> bundesliga = new ArrayList<ArrayList<Team>>();
-ArrayList<ArrayList<HomeTeam>> bundesHome = new ArrayList<ArrayList<HomeTeam>>();
-ArrayList<ArrayList<AwayTeam>> bundesAway = new ArrayList<ArrayList<AwayTeam>>();
-ArrayList<ArrayList<Team>> liga = new ArrayList<ArrayList<Team>>();
-ArrayList<ArrayList<HomeTeam>> ligaHome = new ArrayList<ArrayList<HomeTeam>>();
-ArrayList<ArrayList<AwayTeam>> ligaAway = new ArrayList<ArrayList<AwayTeam>>();
-ArrayList<ArrayList<Team>> seriea = new ArrayList<ArrayList<Team>>();
-ArrayList<ArrayList<HomeTeam>> serieHome = new ArrayList<ArrayList<HomeTeam>>();
-ArrayList<ArrayList<AwayTeam>> serieAway = new ArrayList<ArrayList<AwayTeam>>();
-LeagueTable table;
-Menu mainMenu;
-Menu teamSelect;
-Button returnButton;
+
+ArrayList<ArrayList<ArrayList<Team>>> leagueFull = new ArrayList<ArrayList<ArrayList<Team>>>();//Stores the full league data for all leagues
+ArrayList<ArrayList<ArrayList<HomeTeam>>> leagueHome = new ArrayList<ArrayList<ArrayList<HomeTeam>>>();//Stores the home league data for all leagues
+ArrayList<ArrayList<ArrayList<AwayTeam>>> leagueAway = new ArrayList<ArrayList<ArrayList<AwayTeam>>>();//Stores the away league data for all leagues
+
+//These are menu options - they will all be initialised to zero and utilised in switch cases
+int mainOption;
+int subOption1;
+int subOption2;
+
+int currentYear;
 boolean pressed;
 
-//Global variable to store current menu option
-int menu;
-int subMenu;
-
-int year;
 color arrowOnColour;
 color arrowOffColour;
 color colour1;
 color colour2;
-float tempIndex;
 boolean moveRight;
 boolean moveLeft;
+float tempIndex;
+
+int league;
+int type;
+
+
+LeagueTable table;
+
 int currentX;
 int currentY;
 
-/*Setup method will prepare all the relevant data before anythiing has to be implemented
- */
-void setup() {  
+void setup() {
   //Setup the sketch
   size(600, 600);
   background(252, 252, 252);
 
+  //Load the files and populate the 3 ArrayLists
+  String[] filename = {"premier_league.csv", "bundesliga.csv", "liga.csv", "seriea.csv"};
+  loadData(filename);
 
-  //call the loadData() method and pass the filenames and ArrayList objects
-  loadData("premier_league.csv", premierLeague, premHome, premAway);
-  loadData("bundesliga.csv", bundesliga, bundesHome, bundesAway);
-  loadData("liga.csv", liga, ligaHome, ligaAway);
-  loadData("seriea.csv", seriea, serieHome, serieAway);
+  //Sort the ArrayLists on points scored
+  sortData();
 
-  //sort the ArrayLists
-  sortList(premierLeague);
-  sortList(bundesliga);
-  sortList(liga);
-  sortList(seriea);
+  mainOption = 0;
+  subOption1 = 0;
+  subOption2 = 0;
 
-  String[] mainOptions = {"View Tables"};
-  String[] leagueNames = {"Premier League", "Bundesliga", "La Liga", "Serie A"};
-  mainMenu = new Menu(1, mainOptions, "Welcome To Football Fever\nPlease Select An Option");
-  teamSelect = new Menu(4, leagueNames, "Please Select A league");
-
-  //Set the menu option to 0 for main menu
-  menu = 0;
-  subMenu = 0;
-  year = 0;
-
-  returnButton = new Button();
   pressed = false;
 
+  currentYear = 0;
   arrowOnColour = color(222, 194, 116);
   arrowOffColour = color(127, 127, 127);
   colour1 = arrowOnColour;
   colour2 = arrowOnColour;
-  table = new LeagueTable((float)premierLeague.get(0).size(), year, leagueNames);
-  tempIndex = 0;
-  moveRight = false;
-  moveLeft = false;
+  
+  String[] leagueNames = {"Premier League", "Bundesliga", "La Liga", "Serie A"};
+  String[] leagueType = {"Full", "Home", "Away"};
+  table = new LeagueTable(/*league, type,*/ 0, leagueNames, leagueType);
+  //Test
+  //for (int i = 0; i < 4; i++) {
+  //  for (int j = 0; j < 10; j++) {
+  //    for (int k = 0; k < leagueFull.get(i).get(j).size(); k++) {
+  //      println(leagueFull.get(i).get(j).get(k).getTeamName());
+  //    }
+  //    println();
+  //    println();
+  //  }
+  //} 
 
-
+  //Load the soundeffects and other audio files to be used
   minim = new Minim(this);
-  //println(premierLeague.get(0).size());
-}//end setup() method
+  go = minim.loadSnippet("go.mp3");
+  stop = minim.loadSnippet("whistle.mp3");
+}
 
 void draw() {
   background(255);
-  println("menu is " + menu + " subMenu is " + subMenu);
-  //Switch case to select the menu options
-  switch (menu) {
+  //println("mainOption is " + mainOption + " subOption1 is " + subOption1 + " subOption2 is " + subOption2);
+  switch (mainOption) {
   case 0:
-  if (pressed) {
-
-      buttonPress = minim.loadSnippet("go.mp3");
-      buttonPress.rewind();
-      buttonPress.play();
+    if (pressed) {
+      go.rewind();
+      go.play();
       pressed = !pressed;
-    }
+    }//end if()
+
+    //Create the main menu object
+    String[] mainLabels = {"League Tables", "View Stats"};
+    Menu mainMenu = new Menu(2, mainLabels, "Welcome To Football Fever.\nSelect An Option");
     mainMenu.renderMenu();
     break;
+
   case 1:
     if (pressed) {
-
-      buttonPress = minim.loadSnippet("go.mp3");
-      buttonPress.rewind();
-      buttonPress.play();
+      go.rewind();
+      go.play();
       pressed = !pressed;
-    }
-    viewLeagueMenu();
+    }//end if()
 
-    //checkButton();
+    viewLeagueMenu();    
     break;
+
   case 2:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
 
+    String[] typeLabels = {""};
     break;
-
-  
-
-  
-
-  
   }
 }
 
-/*Method name: loadData
- Purpose: To load up the relevant .csv files and insert the data into ArrayList of objects
- Arguments: A String which holds the filename and a reference to the relevant ArrayList
- */
-void loadData(String filename, ArrayList<ArrayList<Team>> teams, ArrayList<ArrayList<HomeTeam>> homeTeams, ArrayList<ArrayList<AwayTeam>> awayTeams) {
-  //load the file into an array of Strings - each element is now one line from the file
-  String[] leagueLines = loadStrings(filename);
+void loadData(String[] filename) {
+  for (int i = 0; i < filename.length; i++) {
+    //Add new outer dimension to ArrayLists - will reference each of the 4 leagues
+    leagueFull.add(new ArrayList<ArrayList<Team>>());
+    leagueHome.add(new ArrayList<ArrayList<HomeTeam>>());
+    leagueAway.add(new ArrayList<ArrayList<AwayTeam>>());
 
-  //find out how many games in a season - one league has 18 teams and the others have 20 so there are different amounts to each league
-  int gamesPerSeason = leagueLines.length / SEASONS;
+    String[] leagueLines = loadStrings(filename[i]);
 
+    //find out how many games in a season - one league has 18 teams and the others have 20 so there are different amounts to each league
+    int gamesPerSeason = leagueLines.length / SEASONS;
 
-  //use loops to iterate through the array leagueLines
-  for (int i = 0; i < SEASONS; i++) {
-    //create a new outer dimension to teams - outer dimensions will reference each season
-    teams.add(new ArrayList<Team>());
-    homeTeams.add(new ArrayList<HomeTeam>());
-    awayTeams.add(new ArrayList<AwayTeam>());
+    //use loops to iterate through the array leagueLines
+    for (int j = 0; j < SEASONS; j++) {
+      //create a new dimension to teams -  will reference each season
+      leagueFull.get(i).add(new ArrayList<Team>());
+      leagueHome.get(i).add(new ArrayList<HomeTeam>());
+      leagueAway.get(i).add(new ArrayList<AwayTeam>());
 
-    //cycle through each file on a season by season basis to store team info
-    for (int j = i * gamesPerSeason; j < gamesPerSeason + (gamesPerSeason * i); j++) {
-      //split each element of leagueLines into a new array
-      String[] leagueValues = leagueLines[j].split(",");
+      //cycle through each file on a season by season basis to store team info
+      for (int k = j * gamesPerSeason; k < gamesPerSeason + (gamesPerSeason * j); k++) {
+        //split each element of leagueLines into a new array
+        String[] leagueValues = leagueLines[k].split(",");
 
-      //store each element of leagueValues in its own variable and give it a meaningful name
-      String homeTeam = leagueValues[0];
-      String awayTeam = leagueValues[1];
-      //the last element of league values needs to be split to separate the scores into their own variables
-      String[] scores = leagueValues[2].split("-");
-      int homeScore = parseInt(scores[0]);
-      int awayScore = parseInt(scores[1]);
+        //store each element of leagueValues in its own variable and give it a meaningful name
+        String homeTeam = leagueValues[0];
+        String awayTeam = leagueValues[1];
+        //the last element of league values needs to be split to separate the scores into their own variables
+        String[] scores = leagueValues[2].split("-");
+        int homeScore = parseInt(scores[0]);
+        int awayScore = parseInt(scores[1]);
 
-      //create two int variables that will find the index number of each team in the current line - -1 is default and means the team doesn't exist yet
-      int homeIndex = -1;
-      int awayIndex = -1;
-      //search for the teams index in the ArrayList, if it exists
-      for (int k = 0; k < teams.get(i).size(); k++) {
+        //create two int variables that will find the index number of each team in the current line - -1 is default and means the team doesn't exist yet
+        int homeIndex = -1;
+        int awayIndex = -1;
+        //search for the teams index in the ArrayList, if it exists
+        for (int l = 0; l < leagueFull.get(i).get(j).size(); l++) {
+          if (homeTeam.equals(leagueFull.get(i).get(j).get(l).getTeamName())) {
+            homeIndex = l;
+          }//end if()
 
-        if (homeTeam.equals(teams.get(i).get(k).name)) {
-          homeIndex = k;
-        }//end if()
+          if (awayTeam.equals(leagueFull.get(i).get(j).get(l).getTeamName())) {
+            awayIndex = l;
+          }//end if()
+        }//enf for(l)
 
-        if (awayTeam.equals(teams.get(i).get(k).name)) {
-          awayIndex = k;
-        }//end if()
-      }//end inner inner for(k)
+        //if homeIndex is -1 team doesn't exist yet - add a new object to the ArrayList and instanciate its fields
+        if (homeIndex == -1) {
+          leagueFull.get(i).get(j).add(new Team(homeTeam, homeScore, awayScore));
+        } else {//else team does exist - edit the objects fields
+          // println("homeIndex is " + homeIndex + " i is " + i + " j is " + j + " k is " + k);
+          leagueFull.get(i).get(j).get(homeIndex).editTeam(homeScore, awayScore);
+        }//end if/else
 
-      //if homeIndex is -1 team doesn't exist yet - add a new object to the ArrayList and instanciate its fields
-      if (homeIndex == -1) {
-        teams.get(i).add(new Team(homeTeam, homeScore, awayScore));
-      } else {//else team does exist - edit the objects fields
-        teams.get(i).get(homeIndex).editTeam(homeScore, awayScore);
-      }//end if/else
+        //if awayIndex is -1 team doesn't exist yet - add a new object to the ArrayList and instanciate its fields
+        if (awayIndex < 0) {
+          leagueFull.get(i).get(j).add(new Team(awayTeam, awayScore, homeScore));
+        } else {//else team does exist - edit the objects fields
+          leagueFull.get(i).get(j).get(awayIndex).editTeam(awayScore, homeScore);
+        }//end if/else
 
-      //if awayIndex is -1 team doesn't exist yet - add a new object to the ArrayList and instanciate its fields
-      if (awayIndex < 0) {
-        teams.get(i).add(new Team(awayTeam, awayScore, homeScore));
-      } else {//else team does exist - edit the objects fields
-        teams.get(i).get(awayIndex).editTeam(awayScore, homeScore);
-      }//end if/else
+        //re-use int variables that will find the index number of each team in the current line - -1 is default and means the team doesn't exist yet
+        homeIndex = -1;
+        awayIndex = -1;
+        //search for the home teams index in the ArrayList, if it exists
+        for (int l = 0; l < leagueHome.get(i).get(j).size(); l++) {
+          if (homeTeam.equals(leagueHome.get(i).get(j).get(l).getTeamName())) {
+            homeIndex = l;
+          }//end if()
+        }//end inner inner for(l)
 
+        //if homeIndex is -1 team doesn't exist yet - add a new object to the ArrayList and instanciate its fields
+        if (homeIndex == -1) {
+          leagueHome.get(i).get(j).add(new HomeTeam(homeTeam, homeScore, awayScore));
+        } else {//else team does exist - edit the objects fields
+          leagueHome.get(i).get(j).get(homeIndex).editTeam(homeScore, awayScore);
+        }//end if/else
 
-      //re-use int variables that will find the index number of each team in the current line - -1 is default and means the team doesn't exist yet
-      homeIndex = -1;
-      awayIndex = -1;
-      //search for the home teams index in the ArrayList, if it exists
-      for (int k = 0; k < homeTeams.get(i).size(); k++) {
-        if (homeTeam.equals(homeTeams.get(i).get(k).getName())) {
-          homeIndex = k;
-        }//end if()
-      }//end inner inner for(k)
+        //search for the away teams index in the AwayTeam ArrayList, if it exists
+        for (int l = 0; l < leagueAway.get(i).get(j).size(); l++) {
+          if (awayTeam.equals(leagueAway.get(i).get(j).get(l).getTeamName())) {
+            awayIndex = l;
+          }//end if()
+        }//end inner inner for(l)
 
-      //if homeIndex is -1 team doesn't exist yet - add a new object to the ArrayList and instanciate its fields
-      if (homeIndex == -1) {
-        homeTeams.get(i).add(new HomeTeam(homeTeam, homeScore, awayScore));
-      } else {//else team does exist - edit the objects fields
-        homeTeams.get(i).get(homeIndex).editTeam(homeScore, awayScore);
-      }//end if/else
-
-
-
-
-      //search for the away teams index in the AwayTeam ArrayList, if it exists
-      for (int k = 0; k < awayTeams.get(i).size(); k++) {
-        if (awayTeam.equals(awayTeams.get(i).get(k).getName())) {
-          awayIndex = k;
-        }//end if()
-      }//end inner inner for(k)
-
-      //if awayIndex is -1 team doesn't exist yet - add a new object to the ArrayList and instanciate its fields
-      if (awayIndex < 0) {
-        awayTeams.get(i).add(new AwayTeam(awayTeam, awayScore, homeScore));
-      } else {//else team does exist - edit the objects fields
-        awayTeams.get(i).get(awayIndex).editTeam(awayScore, homeScore);
-      }//end if/else
-    }//end inner for(j)
-  }//end outer for(i)
-}//end loadData() method
-
-void sortList(ArrayList<ArrayList<Team>> teams) {
-  Team tempTeam;
-
-  for (int i = 0; i < teams.size(); i++) {
-    for (int j = 0; j < teams.get(i).size() - 1; j++) {
-      for (int k = 0; k < teams.get(i).size() - j - 1; k++) {
-        if (teams.get(i).get(k).getPoints() < teams.get(i).get(k + 1).getPoints()) {
-          tempTeam = teams.get(i).get(k);
-          teams.get(i).set(k, teams.get(i).get(k + 1));
-          teams.get(i).set(k + 1, tempTeam);
-        }
+        //if awayIndex is -1 team doesn't exist yet - add a new object to the ArrayList and instanciate its fields
+        if (awayIndex < 0) {
+          leagueAway.get(i).get(j).add(new AwayTeam(awayTeam, awayScore, homeScore));
+        } else {//else team does exist - edit the objects fields
+          leagueAway.get(i).get(j).get(awayIndex).editTeam(awayScore, homeScore);
+        }//end if/else
       }
     }
   }
 }
 
+void sortData() {
+  //Create temporary objects to use in a bubble sort
+  Team leagueFullTemp;
+  HomeTeam leagueHomeTemp;
+  AwayTeam leagueAwayTemp;
 
+  for (int i = 0; i < leagueFull.size(); i++) {
+    for (int j = 0; j < leagueFull.get(i).size(); j++) {
+      for (int k = 0; k < leagueFull.get(i).get(j).size() - 1; k++) {
+        for (int l = 0; l < leagueFull.get(i).get(j).size() - k - 1; l++) {
+          if (leagueFull.get(i).get(j).get(l).getPoints() < leagueFull.get(i).get(j).get(l + 1).getPoints()) {
+            leagueFullTemp = leagueFull.get(i).get(j).get(l);
+            leagueFull.get(i).get(j).set(l, leagueFull.get(i).get(j).get(l + 1));
+            leagueFull.get(i).get(j).set(l + 1, leagueFullTemp);
+          }//end if()
 
+          if (leagueHome.get(i).get(j).get(l).getPoints() < leagueHome.get(i).get(j).get(l + 1).getPoints()) {
+            leagueHomeTemp = leagueHome.get(i).get(j).get(l);
+            leagueHome.get(i).get(j).set(l, leagueHome.get(i).get(j).get(l + 1));
+            leagueHome.get(i).get(j).set(l + 1, leagueHomeTemp);
+          }//end if()
 
+          if (leagueAway.get(i).get(j).get(l).getPoints() < leagueAway.get(i).get(j).get(l + 1).getPoints()) {
+            leagueAwayTemp = leagueAway.get(i).get(j).get(l);
+            leagueAway.get(i).get(j).set(l, leagueAway.get(i).get(j).get(l + 1));
+            leagueAway.get(i).get(j).set(l + 1, leagueAwayTemp);
+          }//end if()
+        }//end for(l)
+      }//end for(k)
+    }//end for(j)
+  }//end for(i)
+}//end sortData()
+
+/*Method name: getColour
+ Purpose: Allows the league table to select colours for the different positions
+ Arguments: An int variable representing the location in the respective season
+ */
 int[] getColour(int index) {
   int[] colour = new int[3];
   if (index == 0) {
@@ -262,7 +271,7 @@ int[] getColour(int index) {
     colour[1] = 111;
     colour[2] = 142;
     return colour;
-  } else if (index > 16) {
+  } else if (index > leagueFull.get(league).get(0).size() - 4) {
     colour[0] = 81;
     colour[1] = 81;
     colour[2] = 109;
@@ -273,15 +282,125 @@ int[] getColour(int index) {
     colour[2] = 40;
     return colour;
   }
+}//end getColour()
+
+void viewLeagueMenu() {
+  switch(subOption1) {
+  case 0:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    String[] leagueLabels = {"Premier League", "Bundesliga", "La Liga", "Serie A"};
+    Menu leagueMenu = new Menu(4, leagueLabels, "Select A League");
+    leagueMenu.renderMenu();
+    break;
+
+  case 1:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    league = 0;
+    viewTypeMenu();
+
+    break;
+
+  case 2:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    league = 1;
+    viewTypeMenu();
+
+    break;
+
+  case 3:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    league = 2;
+    viewTypeMenu();
+
+    break;
+
+  case 4:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    league = 3;
+    viewTypeMenu();
+
+    break;
+  }
 }
 
-void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
+void viewTypeMenu() {
+  switch (subOption2) {
+  case 0:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    String[] typeLabels = {"Full", "Home", "Away"};
+    Menu typeMenu = new Menu(3, typeLabels, "Whay Type Of League?");
+    typeMenu.renderMenu();
+    break;
+
+  case 1:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    type = 0;
+    viewLeagueTable();
+    break;
+
+  case 2:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    type = 1;
+    viewLeagueTable();
+    break;
+
+  case 3:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    type = 2;
+    viewLeagueTable();
+    break;
+  }
+}
+
+void viewLeagueTable() {
+
+  table.setLeague(league);
+  table.setType(type);
+  table.renderTable();
+
+
+
 
 
   Arrow arrow1 = new Arrow(45.0f, (float)230, 45.0f, (float)270, 5.0f, (float)250, colour1);
   Arrow arrow2 = new Arrow(width - 45.0f, 230.0f, width - 45.0f, (float)270, width - 5.0f, (float)250, colour2);
   //drawArrow(tableSide + tableW + padding, 230, tableSide + tableW + padding, 270, width - padding, 250, false);
-  table.renderTable(team, year);
 
   arrow1.renderArrow();
   arrow2.renderArrow();
@@ -289,42 +408,33 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
   color testColor = get(mouseX, mouseY);
   if (testColor == colour1 && mousePressed && (mouseButton == LEFT) && mouseX < table.getTableMargin() && !moveRight) {
     colour1 = arrowOffColour;
-    if (year > 0) {
-      //minim = new Minim(this);
-      theme = minim.loadSnippet("go.mp3");
-      theme.rewind();
-      theme.play();
+    if (currentYear > 0) {      
+      go.rewind();
+      go.play();
       tempIndex = width;
       moveRight = true;
     } else {
       //maybe play a soundfile
 
       colour1 = arrowOnColour;
-
-      minim = new Minim(this);
-      theme = minim.loadSnippet("whistle.mp3");
-      theme.rewind();
-      theme.play();
+      stop.rewind();
+      stop.play();
     }
   }
 
   if (testColor == colour2 && mousePressed && (mouseButton == LEFT) && mouseX > table.getTableMargin() + table.getPadding() && !moveLeft) {
     colour2 = arrowOffColour;
-    if (year < team.size() - 1) {
-      minim = new Minim(this);
-      theme = minim.loadSnippet("go.mp3");
-      theme.rewind();
-      theme.play();
+    if (currentYear < leagueFull.get(league).size() - 1) {
+      go.rewind();
+      go.play();
       tempIndex = -width;
       moveLeft = true;
     } else {
       //maybe play a soundfile
       colour2 = arrowOnColour;
 
-      //minim = new Minim(this);
-      theme = minim.loadSnippet("whistle.mp3");
-      theme.rewind();
-      theme.play();
+      stop.rewind();
+      stop.play();
     }
   }
 
@@ -332,9 +442,9 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
     if (tempIndex < 0) {
       table.moveLeft();
       tempIndex += 10.0f;
-      if (tempIndex == -20.0f && year < team.size() - 1) {
-        year += 1;
-        table.setYear(year + 2004);
+      if (tempIndex == -20.0f && currentYear < leagueFull.get(league).size() - 1) {
+        currentYear += 1;
+        table.setYear(currentYear + 2004);
         tempIndex = width;
       }
     } else if (tempIndex == width) {
@@ -376,9 +486,9 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
     if (tempIndex > 0) {
       table.moveRight();
       tempIndex -= 10.0f;
-      if (tempIndex == 20.0f && year > 0) {
-        year -= 1;
-        table.setYear(year + 2004);
+      if (tempIndex == 20.0f && currentYear > 0) {
+        currentYear -= 1;
+        table.setYear(currentYear + 2004);
         tempIndex = -width;
       }
     } else if (tempIndex == -width) {
@@ -407,65 +517,7 @@ void showLeagueTable(ArrayList<ArrayList<Team>> team, LeagueTable table) {
     }
   }
 }
-
-void viewLeagueMenu() {
-  switch(subMenu) {
-  case 0:
-    teamSelect.renderMenu();
-    break;
-
-  case 1:
-    if (pressed) {
-      //minim = new Minim(this);
-      buttonPress = minim.loadSnippet("go.mp3");
-      buttonPress.rewind();
-      buttonPress.play();
-      pressed = !pressed;
-    }
-    background(192, 231, 249);
-    showLeagueTable(premierLeague, table);
-    break;
-    
-    case 2:
-    if (pressed) {
-      buttonPress = minim.loadSnippet("go.mp3");
-      buttonPress.rewind();
-      buttonPress.play();
-      pressed = !pressed;
-    }
-    background(192, 231, 249);
-    showLeagueTable(bundesliga, table);
-    break;
-    
-    case 3:
-    if (pressed) {
-      buttonPress = minim.loadSnippet("go.mp3");
-      buttonPress.rewind();
-      buttonPress.play();
-      pressed = !pressed;
-    }
-    background(192, 231, 249);
-    showLeagueTable(liga, table);
-    break;
-    
-    case 4:
-    if (pressed) {
-      buttonPress = minim.loadSnippet("go.mp3");
-      buttonPress.rewind();
-      buttonPress.play();
-      pressed = !pressed;
-    }
-    background(192, 231, 249);
-    showLeagueTable(seriea, table);
-    break;
-  }
-}
-
-void mouseClicked(){
+void mouseClicked() {
   currentX = mouseX;
   currentY = mouseY;
-}
-
-void checkButton() {
-  
 }
