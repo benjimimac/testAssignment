@@ -13,6 +13,10 @@ ArrayList<ArrayList<ArrayList<Team>>> leagueFull = new ArrayList<ArrayList<Array
 ArrayList<ArrayList<ArrayList<HomeTeam>>> leagueHome = new ArrayList<ArrayList<ArrayList<HomeTeam>>>();//Stores the home league data for all leagues
 ArrayList<ArrayList<ArrayList<AwayTeam>>> leagueAway = new ArrayList<ArrayList<ArrayList<AwayTeam>>>();//Stores the away league data for all leagues
 
+ArrayList<ArrayList<Integer>> goal = new ArrayList<ArrayList<Integer>>();
+ArrayList<ArrayList<Float>> goalAverage = new ArrayList<ArrayList<Float>>();
+ArrayList<ArrayList<Integer>> cleansheet = new ArrayList<ArrayList<Integer>>();
+
 //These are menu options - they will all be initialised to zero and utilised in switch cases
 int mainOption;
 int subOption1;
@@ -49,6 +53,13 @@ void setup() {
 
   //Sort the ArrayLists on points scored
   sortData();
+  
+  //Find the total goals scored each season for each league
+  totalGoals();
+  //Find the average goals scored per game
+  averageGoals();
+  //Find the number of cleansheets
+  cleansheets();
 
   mainOption = 0;
   subOption1 = 0;
@@ -520,4 +531,39 @@ void viewLeagueTable() {
 void mouseClicked() {
   currentX = mouseX;
   currentY = mouseY;
+}
+
+void totalGoals(){  
+ for(int i = 0; i < leagueFull.size(); i++){
+  goal.add(new ArrayList<Integer>());
+   for(int j = 0; j < leagueFull.get(i).size(); j++){
+     int tempGoal = 0;
+     for(int k = 0; k < leagueFull.get(i).get(j).size(); k++){
+       tempGoal += leagueFull.get(i).get(j).get(k).getGoalsFor();
+     }//end for(k)
+     goal.get(i).add(tempGoal);
+     println("tempGoal is " + goal.get(i).get(j));
+   }//end for(j)
+   
+ }//end for(i)
+}
+
+void averageGoals(){  
+ for(int i = 0; i < leagueFull.size(); i++){
+  goalAverage.add(new ArrayList<Float>());
+   for(int j = 0; j < leagueFull.get(i).size(); j++){
+     int tempGoal = 0;
+     for(int k = 0; k < leagueFull.get(i).get(j).size(); k++){
+       tempGoal += leagueFull.get(i).get(j).get(k).getGoalsFor();
+     }//end for(k)
+     float averageGoal = tempGoal / (float)leagueFull.get(i).get(j).size();
+     goalAverage.get(i).add(averageGoal);
+     println("Average Goal is " + goalAverage.get(i).get(j));
+   }//end for(j)
+   
+ }//end for(i)
+}
+
+void cleensheets(){
+  
 }

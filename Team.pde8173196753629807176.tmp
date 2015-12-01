@@ -1,7 +1,7 @@
 class Team {
   //class fields
   private String teamName;
-  int goalsFor;
+  private int goalsFor;
   int goalsAgainst;
   int goalDifference;
   private int points;
@@ -65,5 +65,9 @@ class Team {
   
   int getPoints(){
    return points; 
+  }
+  
+  int getGoalsFor(){
+   return goalsFor; 
   }
 }//end class Team
