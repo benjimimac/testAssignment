@@ -38,6 +38,7 @@ int type;
 
 
 LeagueTable table;
+Graph compareGraph;
 
 int currentX;
 int currentY;
@@ -49,17 +50,18 @@ void setup() {
 
   //Load the files and populate the 3 ArrayLists
   String[] filename = {"premier_league.csv", "bundesliga.csv", "liga.csv", "seriea.csv"};
+  //Call the cleansheets method from in here
   loadData(filename);
 
   //Sort the ArrayLists on points scored
   sortData();
-  
+
   //Find the total goals scored each season for each league
   totalGoals();
   //Find the average goals scored per game
   averageGoals();
   //Find the number of cleansheets
-  cleansheets();
+  //cleansheets();
 
   mainOption = 0;
   subOption1 = 0;
@@ -72,10 +74,11 @@ void setup() {
   arrowOffColour = color(127, 127, 127);
   colour1 = arrowOnColour;
   colour2 = arrowOnColour;
-  
+
   String[] leagueNames = {"Premier League", "Bundesliga", "La Liga", "Serie A"};
   String[] leagueType = {"Full", "Home", "Away"};
   table = new LeagueTable(/*league, type,*/ 0, leagueNames, leagueType);
+  compareGraph = new Graph(leagueNames);
   //Test
   //for (int i = 0; i < 4; i++) {
   //  for (int j = 0; j < 10; j++) {
@@ -127,7 +130,7 @@ void draw() {
       pressed = !pressed;
     }//end if()
 
-    String[] typeLabels = {""};
+    viewStatMenu();
     break;
   }
 }
@@ -138,6 +141,7 @@ void loadData(String[] filename) {
     leagueFull.add(new ArrayList<ArrayList<Team>>());
     leagueHome.add(new ArrayList<ArrayList<HomeTeam>>());
     leagueAway.add(new ArrayList<ArrayList<AwayTeam>>());
+    cleansheet.add(new ArrayList<Integer>());
 
     String[] leagueLines = loadStrings(filename[i]);
 
@@ -150,6 +154,9 @@ void loadData(String[] filename) {
       leagueFull.get(i).add(new ArrayList<Team>());
       leagueHome.get(i).add(new ArrayList<HomeTeam>());
       leagueAway.get(i).add(new ArrayList<AwayTeam>());
+      int seasonCleansheet = 0;
+      cleansheet.get(i).add(seasonCleansheet);
+
 
       //cycle through each file on a season by season basis to store team info
       for (int k = j * gamesPerSeason; k < gamesPerSeason + (gamesPerSeason * j); k++) {
@@ -163,6 +170,14 @@ void loadData(String[] filename) {
         String[] scores = leagueValues[2].split("-");
         int homeScore = parseInt(scores[0]);
         int awayScore = parseInt(scores[1]);
+
+        //Call the cleansheet method here
+        if (homeScore == 0) {
+          cleansheets(i, j);
+        }
+        if (awayScore == 0) {
+          cleansheets(i, j);
+        }
 
         //create two int variables that will find the index number of each team in the current line - -1 is default and means the team doesn't exist yet
         int homeIndex = -1;
@@ -223,10 +238,12 @@ void loadData(String[] filename) {
         } else {//else team does exist - edit the objects fields
           leagueAway.get(i).get(j).get(awayIndex).editTeam(awayScore, homeScore);
         }//end if/else
-      }
-    }
-  }
-}
+      }//end for(k)
+
+      println(filename[i] + " had " + cleansheet.get(i).get(j) + " in season " + j);
+    }//end for(j)
+  }//end for(i)
+}//end loadData method
 
 void sortData() {
   //Create temporary objects to use in a bubble sort
@@ -533,37 +550,76 @@ void mouseClicked() {
   currentY = mouseY;
 }
 
-void totalGoals(){  
- for(int i = 0; i < leagueFull.size(); i++){
-  goal.add(new ArrayList<Integer>());
-   for(int j = 0; j < leagueFull.get(i).size(); j++){
-     int tempGoal = 0;
-     for(int k = 0; k < leagueFull.get(i).get(j).size(); k++){
-       tempGoal += leagueFull.get(i).get(j).get(k).getGoalsFor();
-     }//end for(k)
-     goal.get(i).add(tempGoal);
-     println("tempGoal is " + goal.get(i).get(j));
-   }//end for(j)
-   
- }//end for(i)
+void totalGoals() {  
+  for (int i = 0; i < leagueFull.size(); i++) {
+    goal.add(new ArrayList<Integer>());
+    for (int j = 0; j < leagueFull.get(i).size(); j++) {
+      int tempGoal = 0;
+      for (int k = 0; k < leagueFull.get(i).get(j).size(); k++) {
+        tempGoal += leagueFull.get(i).get(j).get(k).getGoalsFor();
+      }//end for(k)
+      goal.get(i).add(tempGoal);
+    }//end for(j)
+  }//end for(i)
 }
 
-void averageGoals(){  
- for(int i = 0; i < leagueFull.size(); i++){
-  goalAverage.add(new ArrayList<Float>());
-   for(int j = 0; j < leagueFull.get(i).size(); j++){
-     int tempGoal = 0;
-     for(int k = 0; k < leagueFull.get(i).get(j).size(); k++){
-       tempGoal += leagueFull.get(i).get(j).get(k).getGoalsFor();
-     }//end for(k)
-     float averageGoal = tempGoal / (float)leagueFull.get(i).get(j).size();
-     goalAverage.get(i).add(averageGoal);
-     println("Average Goal is " + goalAverage.get(i).get(j));
-   }//end for(j)
-   
- }//end for(i)
+void averageGoals() {  
+  for (int i = 0; i < leagueFull.size(); i++) {
+    goalAverage.add(new ArrayList<Float>());
+    for (int j = 0; j < leagueFull.get(i).size(); j++) {
+      int tempGoal = 0;
+      for (int k = 0; k < leagueFull.get(i).get(j).size(); k++) {
+        tempGoal += leagueFull.get(i).get(j).get(k).getGoalsFor();
+      }//end for(k)
+      float averageGoal = tempGoal / (float)leagueFull.get(i).get(j).size();
+      goalAverage.get(i).add(averageGoal);
+    }//end for(j)
+  }//end for(i)
 }
 
-void cleensheets(){
-  
+void cleansheets(int league, int season) {
+  cleansheet.get(league).set(season, cleansheet.get(league).get(season) + 1);
+}//end cleansheet method
+
+void viewStatMenu() {
+  switch (subOption1) {
+  case 0:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+
+    //Create the main menu object
+    String[] mainLabels = {"Most Goals", "Average Goals", "Cleansheets"};
+    Menu statMenu = new Menu(3, mainLabels, "Select A Stat To View");
+    statMenu.renderMenu();
+    break;
+
+  case 1:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    
+    compareGraph.renderGraph(0);
+    break;
+    
+    case 2:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    break;
+    
+    case 3:
+    if (pressed) {
+      go.rewind();
+      go.play();
+      pressed = !pressed;
+    }//end if()
+    break;
+  }
 }
