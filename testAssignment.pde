@@ -24,6 +24,7 @@ int subOption2;
 
 int currentYear;
 boolean pressed;
+int currentSeason;
 
 color arrowOnColour;
 color arrowOffColour;
@@ -79,6 +80,8 @@ void setup() {
   String[] leagueType = {"Full", "Home", "Away"};
   table = new LeagueTable(/*league, type,*/ 0, leagueNames, leagueType);
   compareGraph = new Graph(leagueNames);
+  
+  currentSeason = 0;
   //Test
   //for (int i = 0; i < 4; i++) {
   //  for (int j = 0; j < 10; j++) {
@@ -89,7 +92,11 @@ void setup() {
   //    println();
   //  }
   //} 
-
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 10; j++) {
+      println(filename[i] + " had " + goal.get(i).get(j) + " goals in season " + j + 1);
+    }
+  }
   //Load the soundeffects and other audio files to be used
   minim = new Minim(this);
   go = minim.loadSnippet("go.mp3");
@@ -239,8 +246,6 @@ void loadData(String[] filename) {
           leagueAway.get(i).get(j).get(awayIndex).editTeam(awayScore, homeScore);
         }//end if/else
       }//end for(k)
-
-      println(filename[i] + " had " + cleansheet.get(i).get(j) + " in season " + j);
     }//end for(j)
   }//end for(i)
 }//end loadData method
@@ -602,19 +607,19 @@ void viewStatMenu() {
       go.play();
       pressed = !pressed;
     }//end if()
-    
-    compareGraph.renderGraph(0);
+
+    compareGraph.renderGraph();
     break;
-    
-    case 2:
+
+  case 2:
     if (pressed) {
       go.rewind();
       go.play();
       pressed = !pressed;
     }//end if()
     break;
-    
-    case 3:
+
+  case 3:
     if (pressed) {
       go.rewind();
       go.play();
