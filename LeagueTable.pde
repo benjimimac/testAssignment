@@ -72,7 +72,7 @@ class LeagueTable {
     text("G-", col7X + padding, tableTop - padding);
     text("GD", col8X + padding, tableTop - padding);
     text("Pts", col9X + padding, tableTop - padding);
-    for (int i = 0; i < leagueFull.get(league).get(currentYear).size(); i++) {
+    for (int i = 0; i < leagueFull.get(league).get(currentSeason).size(); i++) {
       float textY = tableTop + rowHeight + (rowHeight * i) - padding;
       float posX = tableMargin + padding;
       float nameX = col1X + padding;
@@ -94,12 +94,12 @@ class LeagueTable {
       
       Team temp;
       if(type == 0){
-        temp = leagueFull.get(league).get(currentYear).get(i);
+        temp = leagueFull.get(league).get(currentSeason).get(i);
       }else if(type == 1){
-        temp = leagueHome.get(league).get(currentYear).get(i);
+        temp = leagueHome.get(league).get(currentSeason).get(i);
       }
       else{
-       temp = leagueAway.get(league).get(currentYear).get(i); 
+       temp = leagueAway.get(league).get(currentSeason).get(i); 
       }
       
       text(i + 1, posX, textY);
@@ -114,15 +114,15 @@ class LeagueTable {
       text(temp.points, ptsX, textY);
     }
 
-    line(col1X, tableTop, col1X, (rowHeight * leagueFull.get(league).get(currentYear).size())  + tableTop);
-    line(col2X, tableTop, col2X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
-    line(col3X, tableTop, col3X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
-    line(col4X, tableTop, col4X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
-    line(col5X, tableTop, col5X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
-    line(col6X, tableTop, col6X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
-    line(col7X, tableTop, col7X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
-    line(col8X, tableTop, col8X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
-    line(col9X, tableTop, col9X, (rowHeight * leagueFull.get(league).get(currentYear).size()) + tableTop);
+    line(col1X, tableTop, col1X, (rowHeight * leagueFull.get(league).get(currentSeason).size())  + tableTop);
+    line(col2X, tableTop, col2X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
+    line(col3X, tableTop, col3X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
+    line(col4X, tableTop, col4X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
+    line(col5X, tableTop, col5X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
+    line(col6X, tableTop, col6X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
+    line(col7X, tableTop, col7X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
+    line(col8X, tableTop, col8X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
+    line(col9X, tableTop, col9X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
     
     Button returnButton = new Button();
     returnButton.setButtonX(width / 2.0f);

@@ -8,6 +8,7 @@ Minim minim;
 
 
 final int SEASONS = 10;  //This is a constant variable - there are 10 seasons
+final int NOOFLEAGUES = 4;  //This is a constant variable - there are 4 leagues
 
 ArrayList<ArrayList<ArrayList<Team>>> leagueFull = new ArrayList<ArrayList<ArrayList<Team>>>();//Stores the full league data for all leagues
 ArrayList<ArrayList<ArrayList<HomeTeam>>> leagueHome = new ArrayList<ArrayList<ArrayList<HomeTeam>>>();//Stores the home league data for all leagues
@@ -17,14 +18,15 @@ ArrayList<ArrayList<Integer>> goal = new ArrayList<ArrayList<Integer>>();
 ArrayList<ArrayList<Float>> goalAverage = new ArrayList<ArrayList<Float>>();
 ArrayList<ArrayList<Integer>> cleansheet = new ArrayList<ArrayList<Integer>>();
 
+float[] lastPoint;
+
 //These are menu options - they will all be initialised to zero and utilised in switch cases
 int mainOption;
 int subOption1;
 int subOption2;
 
-int currentYear;
-boolean pressed;
 int currentSeason;
+boolean pressed;
 
 color arrowOnColour;
 color arrowOffColour;
@@ -54,6 +56,8 @@ void setup() {
   //Call the cleansheets method from in here
   loadData(filename);
 
+  lastPoint = new float[NOOFLEAGUES];
+
   //Sort the ArrayLists on points scored
   sortData();
 
@@ -70,7 +74,7 @@ void setup() {
 
   pressed = false;
 
-  currentYear = 0;
+  currentSeason = 0;
   arrowOnColour = color(222, 194, 116);
   arrowOffColour = color(127, 127, 127);
   colour1 = arrowOnColour;
@@ -80,8 +84,7 @@ void setup() {
   String[] leagueType = {"Full", "Home", "Away"};
   table = new LeagueTable(/*league, type,*/ 0, leagueNames, leagueType);
   compareGraph = new Graph(leagueNames);
-  
-  currentSeason = 0;
+
   //Test
   //for (int i = 0; i < 4; i++) {
   //  for (int j = 0; j < 10; j++) {
@@ -92,11 +95,11 @@ void setup() {
   //    println();
   //  }
   //} 
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 10; j++) {
-      println(filename[i] + " had " + goal.get(i).get(j) + " goals in season " + j + 1);
-    }
-  }
+  //for (int i = 0; i < 4; i++) {
+  //  for (int j = 0; j < 10; j++) {
+  //    println(filename[i] + " had " + goal.get(i).get(j) + " goals in season " + j + 1);
+  //  }
+  //}
   //Load the soundeffects and other audio files to be used
   minim = new Minim(this);
   go = minim.loadSnippet("go.mp3");
@@ -105,7 +108,8 @@ void setup() {
 
 void draw() {
   background(255);
-  //println("mainOption is " + mainOption + " subOption1 is " + subOption1 + " subOption2 is " + subOption2);
+  println("CurrentSeason is " +currentSeason + ", currentX is " + currentX + ", currentY is " + currentY + ", mouseX is " + mouseX + ", mouseY is " + mouseY);
+  println();
   switch (mainOption) {
   case 0:
     if (pressed) {
@@ -441,7 +445,7 @@ void viewLeagueTable() {
   color testColor = get(mouseX, mouseY);
   if (testColor == colour1 && mousePressed && (mouseButton == LEFT) && mouseX < table.getTableMargin() && !moveRight) {
     colour1 = arrowOffColour;
-    if (currentYear > 0) {      
+    if (currentSeason > 0) {      
       go.rewind();
       go.play();
       tempIndex = width;
@@ -457,7 +461,7 @@ void viewLeagueTable() {
 
   if (testColor == colour2 && mousePressed && (mouseButton == LEFT) && mouseX > table.getTableMargin() + table.getPadding() && !moveLeft) {
     colour2 = arrowOffColour;
-    if (currentYear < leagueFull.get(league).size() - 1) {
+    if (currentSeason < leagueFull.get(league).size() - 1) {
       go.rewind();
       go.play();
       tempIndex = -width;
@@ -475,9 +479,9 @@ void viewLeagueTable() {
     if (tempIndex < 0) {
       table.moveLeft();
       tempIndex += 10.0f;
-      if (tempIndex == -20.0f && currentYear < leagueFull.get(league).size() - 1) {
-        currentYear += 1;
-        table.setYear(currentYear + 2004);
+      if (tempIndex == -20.0f && currentSeason < leagueFull.get(league).size() - 1) {
+        currentSeason += 1;
+        table.setYear(currentSeason + 2004);
         tempIndex = width;
       }
     } else if (tempIndex == width) {
@@ -519,9 +523,9 @@ void viewLeagueTable() {
     if (tempIndex > 0) {
       table.moveRight();
       tempIndex -= 10.0f;
-      if (tempIndex == 20.0f && currentYear > 0) {
-        currentYear -= 1;
-        table.setYear(currentYear + 2004);
+      if (tempIndex == 20.0f && currentSeason > 0) {
+        currentSeason -= 1;
+        table.setYear(currentSeason + 2004);
         tempIndex = -width;
       }
     } else if (tempIndex == -width) {
@@ -594,7 +598,12 @@ void viewStatMenu() {
       go.play();
       pressed = !pressed;
     }//end if()
+    
+    for (int i = 0; i < NOOFLEAGUES; i++) {
+      lastPoint[i] = 0.0f;
+    }
 
+    currentSeason = 0;
     //Create the main menu object
     String[] mainLabels = {"Most Goals", "Average Goals", "Cleansheets"};
     Menu statMenu = new Menu(3, mainLabels, "Select A Stat To View");
@@ -607,6 +616,7 @@ void viewStatMenu() {
       go.play();
       pressed = !pressed;
     }//end if()
+    
 
     compareGraph.renderGraph();
     break;
