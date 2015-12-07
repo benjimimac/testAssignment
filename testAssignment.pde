@@ -41,7 +41,7 @@ int type;
 
 
 LeagueTable table;
-Graph compareGraph;
+
 
 int currentX;
 int currentY;
@@ -83,23 +83,16 @@ void setup() {
   String[] leagueNames = {"Premier League", "Bundesliga", "La Liga", "Serie A"};
   String[] leagueType = {"Full", "Home", "Away"};
   table = new LeagueTable(/*league, type,*/ 0, leagueNames, leagueType);
-  compareGraph = new Graph(leagueNames);
+  
 
   //Test
-  //for (int i = 0; i < 4; i++) {
-  //  for (int j = 0; j < 10; j++) {
-  //    for (int k = 0; k < leagueFull.get(i).get(j).size(); k++) {
-  //      println(leagueFull.get(i).get(j).get(k).getTeamName());
-  //    }
-  //    println();
-  //    println();
-  //  }
-  //} 
-  //for (int i = 0; i < 4; i++) {
-  //  for (int j = 0; j < 10; j++) {
-  //    println(filename[i] + " had " + goal.get(i).get(j) + " goals in season " + j + 1);
-  //  }
-  //}
+  for(int i = 0; i < 4; i++){
+    for(int k = 0; k < 10; k++){
+      println(goalAverage.get(i).get(k));
+    }
+    println();
+    println();
+  }
   //Load the soundeffects and other audio files to be used
   minim = new Minim(this);
   go = minim.loadSnippet("go.mp3");
@@ -108,8 +101,8 @@ void setup() {
 
 void draw() {
   background(255);
-  println("CurrentSeason is " +currentSeason + ", currentX is " + currentX + ", currentY is " + currentY + ", mouseX is " + mouseX + ", mouseY is " + mouseY);
-  println();
+  //println("CurrentSeason is " +currentSeason);
+  //println();
   switch (mainOption) {
   case 0:
     if (pressed) {
@@ -388,6 +381,7 @@ void viewTypeMenu() {
       go.play();
       pressed = !pressed;
     }//end if()
+    currentSeason = 0;
     String[] typeLabels = {"Full", "Home", "Away"};
     Menu typeMenu = new Menu(3, typeLabels, "Whay Type Of League?");
     typeMenu.renderMenu();
@@ -430,7 +424,7 @@ void viewLeagueTable() {
   table.setLeague(league);
   table.setType(type);
   table.renderTable();
-
+  table.setYear(currentSeason + 2004);
 
 
 
@@ -481,7 +475,7 @@ void viewLeagueTable() {
       tempIndex += 10.0f;
       if (tempIndex == -20.0f && currentSeason < leagueFull.get(league).size() - 1) {
         currentSeason += 1;
-        table.setYear(currentSeason + 2004);
+        //table.setYear(currentSeason + 2004);
         tempIndex = width;
       }
     } else if (tempIndex == width) {
@@ -525,7 +519,7 @@ void viewLeagueTable() {
       tempIndex -= 10.0f;
       if (tempIndex == 20.0f && currentSeason > 0) {
         currentSeason -= 1;
-        table.setYear(currentSeason + 2004);
+        //table.setYear(currentSeason + 2004);
         tempIndex = -width;
       }
     } else if (tempIndex == -width) {
@@ -591,6 +585,11 @@ void cleansheets(int league, int season) {
 }//end cleansheet method
 
 void viewStatMenu() {
+  String[] leagueNames = {"Premier League", "Bundesliga", "La Liga", "Serie A"};
+  String[] message = {"Most Goals Scored", "Average Goals Scored", "Most Cleansheets Kept"};
+  Graph compareGraph;
+  
+  
   switch (subOption1) {
   case 0:
     if (pressed) {
@@ -617,7 +616,8 @@ void viewStatMenu() {
       pressed = !pressed;
     }//end if()
     
-
+    //Graph compareGraph;
+    compareGraph = new Graph(leagueNames, message);
     compareGraph.renderGraph();
     break;
 
@@ -627,6 +627,10 @@ void viewStatMenu() {
       go.play();
       pressed = !pressed;
     }//end if()
+    
+    compareGraph = new Graph(leagueNames, message);
+    compareGraph.renderGraph();
+    //compareGraph.renderGraph();
     break;
 
   case 3:
@@ -635,6 +639,11 @@ void viewStatMenu() {
       go.play();
       pressed = !pressed;
     }//end if()
+    
+    compareGraph = new Graph(leagueNames, message);
+    compareGraph.renderGraph();
+    //Graph compareGraph;
+    //compareGraph.renderGraph();
     break;
   }
 }
