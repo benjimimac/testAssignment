@@ -19,6 +19,7 @@ ArrayList<ArrayList<Float>> goalAverage = new ArrayList<ArrayList<Float>>();
 ArrayList<ArrayList<Integer>> cleansheet = new ArrayList<ArrayList<Integer>>();
 
 float[] lastPoint;
+color grey;
 
 //These are menu options - they will all be initialised to zero and utilised in switch cases
 int mainOption;
@@ -49,7 +50,7 @@ int currentY;
 void setup() {
   //Setup the sketch
   size(600, 600);
-  background(252, 252, 252);
+  background(250);
 
   //Load the files and populate the 3 ArrayLists
   String[] filename = {"premier_league.csv", "bundesliga.csv", "liga.csv", "seriea.csv"};
@@ -65,8 +66,6 @@ void setup() {
   totalGoals();
   //Find the average goals scored per game
   averageGoals();
-  //Find the number of cleansheets
-  //cleansheets();
 
   mainOption = 0;
   subOption1 = 0;
@@ -83,16 +82,8 @@ void setup() {
   String[] leagueNames = {"Premier League", "Bundesliga", "La Liga", "Serie A"};
   String[] leagueType = {"Full", "Home", "Away"};
   table = new LeagueTable(/*league, type,*/ 0, leagueNames, leagueType);
+  grey = color(127, 127, 127);
   
-
-  //Test
-  for(int i = 0; i < 4; i++){
-    for(int k = 0; k < 10; k++){
-      println(goalAverage.get(i).get(k));
-    }
-    println();
-    println();
-  }
   //Load the soundeffects and other audio files to be used
   minim = new Minim(this);
   go = minim.loadSnippet("go.mp3");
@@ -101,8 +92,6 @@ void setup() {
 
 void draw() {
   background(255);
-  //println("CurrentSeason is " +currentSeason);
-  //println();
   switch (mainOption) {
   case 0:
     if (pressed) {
@@ -284,32 +273,22 @@ void sortData() {
  Purpose: Allows the league table to select colours for the different positions
  Arguments: An int variable representing the location in the respective season
  */
-int[] getColour(int index) {
-  int[] colour = new int[3];
+color getColour(int index) {
+  color colour;
   if (index == 0) {
-    colour[0] = 81;
-    colour[1] = 81;
-    colour[2] = 109;
+    colour = color(181, 231, 206);
     return colour;
   } else if (index > 0 && index < 4) {
-    colour[0] = 96;
-    colour[1] = 96;
-    colour[2] = 124;
+    colour = color(129, 214, 172);
     return colour;
   } else if (index == 4) {
-    colour[0] = 112;
-    colour[1] = 111;
-    colour[2] = 142;
+    colour = color(81, 81, 109);
     return colour;
   } else if (index > leagueFull.get(league).get(0).size() - 4) {
-    colour[0] = 81;
-    colour[1] = 81;
-    colour[2] = 109;
+    colour = color(255, 90, 112);
     return colour;
   } else {
-    colour[0] = 5;
-    colour[1] = 5;
-    colour[2] = 40;
+    colour = color(222, 222, 255);
     return colour;
   }
 }//end getColour()
@@ -420,18 +399,14 @@ void viewTypeMenu() {
 }
 
 void viewLeagueTable() {
-
   table.setLeague(league);
   table.setType(type);
   table.renderTable();
   table.setYear(currentSeason + 2004);
-
-
-
-
+  
+  //Create the arrow button objects
   Arrow arrow1 = new Arrow(45.0f, (float)230, 45.0f, (float)270, 5.0f, (float)250, colour1);
   Arrow arrow2 = new Arrow(width - 45.0f, 230.0f, width - 45.0f, (float)270, width - 5.0f, (float)250, colour2);
-  //drawArrow(tableSide + tableW + padding, 230, tableSide + tableW + padding, 270, width - padding, 250, false);
 
   arrow1.renderArrow();
   arrow2.renderArrow();
@@ -475,7 +450,6 @@ void viewLeagueTable() {
       tempIndex += 10.0f;
       if (tempIndex == -20.0f && currentSeason < leagueFull.get(league).size() - 1) {
         currentSeason += 1;
-        //table.setYear(currentSeason + 2004);
         tempIndex = width;
       }
     } else if (tempIndex == width) {
@@ -504,22 +478,13 @@ void viewLeagueTable() {
     }
   }
 
-
-
-
-
-
-
-
-
-
+  //If previous season
   if (moveRight) {
     if (tempIndex > 0) {
       table.moveRight();
       tempIndex -= 10.0f;
       if (tempIndex == 20.0f && currentSeason > 0) {
         currentSeason -= 1;
-        //table.setYear(currentSeason + 2004);
         tempIndex = -width;
       }
     } else if (tempIndex == -width) {
@@ -616,7 +581,6 @@ void viewStatMenu() {
       pressed = !pressed;
     }//end if()
     
-    //Graph compareGraph;
     compareGraph = new Graph(leagueNames, message);
     compareGraph.renderGraph();
     break;
@@ -630,7 +594,6 @@ void viewStatMenu() {
     
     compareGraph = new Graph(leagueNames, message);
     compareGraph.renderGraph();
-    //compareGraph.renderGraph();
     break;
 
   case 3:
@@ -642,8 +605,6 @@ void viewStatMenu() {
     
     compareGraph = new Graph(leagueNames, message);
     compareGraph.renderGraph();
-    //Graph compareGraph;
-    //compareGraph.renderGraph();
     break;
   }
 }

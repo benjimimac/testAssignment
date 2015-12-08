@@ -25,7 +25,7 @@ class LeagueTable {
   private int type;
 
   //Constructor method
-  LeagueTable(/*int league, int type, */int year, String[] leagueNames, String[] leagueType) {
+  LeagueTable(int year, String[] leagueNames, String[] leagueType) {
     tableMargin = width * 0.1f;
     tableTop = height * 0.1f;
     tableW = width - (tableMargin * 2);
@@ -61,7 +61,7 @@ class LeagueTable {
     textAlign(CENTER);
     text(leagueNames[league] + " " + leagueType[type] + " " + this.year + "/" + (this.year - 1999), width / 2, tableTop - rowHeight);
     textAlign(CORNER);
-    textSize(12);
+    textSize(14);
     text("Pos", tableMargin + padding, tableTop - padding);
     text("Name", col1X + padding, tableTop - padding);
     text("Pld", col2X + padding, tableTop - padding);
@@ -84,24 +84,22 @@ class LeagueTable {
       float gMX = col7X + padding;
       float gDX = col8X + padding;
       float ptsX = col9X + padding;
-      //float rowBottom = tableTop + rowHeight + (rowHeight * i);
 
       //Draw row bottom border
-      int[] colour = getColour(i);
-      fill(colour[0], colour[1], colour[2]);
+      color colour = getColour(i);
+      fill(colour);
       rect(tableMargin, tableTop + (rowHeight * i), tableW, rowHeight);
-      fill(255);
-      
+      fill(0);
+
       Team temp;
-      if(type == 0){
+      if (type == 0) {
         temp = leagueFull.get(league).get(currentSeason).get(i);
-      }else if(type == 1){
+      } else if (type == 1) {
         temp = leagueHome.get(league).get(currentSeason).get(i);
+      } else {
+        temp = leagueAway.get(league).get(currentSeason).get(i);
       }
-      else{
-       temp = leagueAway.get(league).get(currentSeason).get(i); 
-      }
-      
+
       text(i + 1, posX, textY);
       text(temp.getTeamName(), nameX, textY);
       text(temp.played, pldX, textY);
@@ -123,25 +121,25 @@ class LeagueTable {
     line(col7X, tableTop, col7X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
     line(col8X, tableTop, col8X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
     line(col9X, tableTop, col9X, (rowHeight * leagueFull.get(league).get(currentSeason).size()) + tableTop);
-    
+
     Button returnButton = new Button();
     returnButton.setButtonX(width / 2.0f);
     returnButton.setButtonY(height - 30.0f);
     returnButton.setLabel("Return");
     returnButton.renderButton();
     boolean backOne = returnButton.checkPressed();
-    if(backOne){
+    if (backOne) {
       subOption2 = 0;
       pressed = true;
     }
   }
-  
-  void moveLeft(){
+
+  void moveLeft() {
     setTableMargin(tableMargin - speed);
     setColumns(col1X - speed, col2X - speed, col3X - speed, col4X - speed, col5X - speed, col6X - speed, col7X - speed, col8X - speed, col9X - speed);
   }
-  
-  void moveRight(){
+
+  void moveRight() {
     setTableMargin(tableMargin + speed);
     setColumns(col1X + speed, col2X + speed, col3X + speed, col4X + speed, col5X + speed, col6X + speed, col7X + speed, col8X + speed, col9X + speed);
   }
@@ -158,44 +156,44 @@ class LeagueTable {
   float getTableW() {
     return tableW;
   }
-  
-  float getColScaleA(){
-   return colScaleA; 
+
+  float getColScaleA() {
+    return colScaleA;
   }
-  
-  float getColScaleB(){
-   return colScaleB; 
+
+  float getColScaleB() {
+    return colScaleB;
   }
-  
-  float getSpeed(){
-   return speed; 
+
+  float getSpeed() {
+    return speed;
   }
-  
-  void setTableMargin(float tableMargin){
-    this.tableMargin = tableMargin;  
+
+  void setTableMargin(float tableMargin) {
+    this.tableMargin = tableMargin;
   }
-  
-  void setColumns(float col1X, float col2X, float col3X, float col4X, float col5X, float col6X, float col7X, float col8X, float col9X){
-   this.col1X = col1X;
-   this.col2X = col2X;
-   this.col3X = col3X;
-   this.col4X = col4X;
-   this.col5X = col5X;
-   this.col6X = col6X;
-   this.col7X = col7X;
-   this.col8X = col8X;
-   this.col9X = col9X;
+
+  void setColumns(float col1X, float col2X, float col3X, float col4X, float col5X, float col6X, float col7X, float col8X, float col9X) {
+    this.col1X = col1X;
+    this.col2X = col2X;
+    this.col3X = col3X;
+    this.col4X = col4X;
+    this.col5X = col5X;
+    this.col6X = col6X;
+    this.col7X = col7X;
+    this.col8X = col8X;
+    this.col9X = col9X;
   }
-  
-  void setYear(int year){
-   this.year = year ;
+
+  void setYear(int year) {
+    this.year = year ;
   }
-  
-  void setLeague(int league){
-   this.league = league; 
+
+  void setLeague(int league) {
+    this.league = league;
   }
-  
-  void setType(int type){
-   this.type = type;
+
+  void setType(int type) {
+    this.type = type;
   }
 }
